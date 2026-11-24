@@ -1,0 +1,7 @@
+{
+  "dialect": "postgresql",
+  "schema": "./src/db/schema.ts",
+  "dbCredentials": {
+    "url": "postgresql://bsp_user:bsp_local_123@127.0.0.1:5432/bsp_dev"
+  }
+}

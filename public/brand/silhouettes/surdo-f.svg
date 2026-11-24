@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 650">
+  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+    <!-- pernas em base aberta e dinâmica -->
+    <path d="M178 330 150 445 91 556" stroke-width="54"/>
+    <path d="M240 330 285 445 370 557" stroke-width="54"/>
+    <path d="m91 556-46 31 15 19 67-1 17-16" stroke-width="28"/>
+    <path d="m370 557 46 30-12 20-67-1-18-17" stroke-width="28"/>
+    <!-- braços: uma mão apoia o instrumento e a outra ergue a baqueta -->
+    <path d="M151 192 103 250 181 271 278 246" stroke-width="35"/>
+    <path d="M250 188 297 147 319 92" stroke-width="35"/>
+  </g>
+  <g fill="#fff">
+    <!-- tênis -->
+    <path d="m45 577 57-14 24 18 11 24-11 13H46l-23-13 7-20Z"/>
+    <path d="m359 577 53-15 25 17 12 23-10 15h-81l-22-14 7-19Z"/>
+    <!-- tronco com cintura levemente marcada -->
+    <path d="M153 178q41-27 88-12 31 11 35 48l-13 96q-4 35-35 45-44 13-85-2-29-10-29-39l8-91q3-31 31-45Z"/>
+    <path d="M156 333q49 19 101 0l21 30-31 25-92-2-27-25Z"/>
+    <!-- cabeça e cabelo crespo preso alto -->
+    <path d="M153 94q-2-43 34-60 38-19 72 10 29 25 14 72-11 35-42 46-38 11-64-18-16-19-14-50Z"/>
+    <path d="M146 89q-13-43 25-69 22-15 43-3 23-19 48 4 20 18 17 48-17-18-33-9-16-21-32-9-15-13-29 2-19-4-27 14-7 13-12 22Z"/>
+    <path d="M167 49q-21-25-9-42 15-21 38-9 19 10 15 31-5 23-25 27Z"/>
+    <path d="M149 71q-24 13-23 42 1 18 15 31-11 21 7 39 15-8 12-25-13-12-4-25 12-22-7-62Z"/>
+    <path d="M237 77q24-3 33 19 7 19-8 34 15 14 4 29-10 14-23 5 11-17-2-31 11-25-4-56Z"/>
+    <!-- brinco circular -->
+    <circle cx="154" cy="125" r="13" fill="none" stroke="#fff" stroke-width="7"/>
+    <!-- mãos -->
+    <path d="M268 232q9-13 22-11l20 7q11 4 7 16l-7 19q-5 12-18 7l-25-10q-12-5-5-17Z"/>
+    <path d="M306 89q-4-13 7-20l13-7q10-4 16 5l6 10q5 10-4 17l-17 12Z"/>
+  </g>
+  <!-- surdo elevado em diagonal -->
+  <g transform="rotate(-18 346 206)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="346" cy="124" rx="62" ry="22" stroke-width="15"/>
+    <path d="M284 124v157q0 22 62 22t62-22V124" stroke-width="15"/>
+    <ellipse cx="346" cy="281" rx="62" ry="22" stroke-width="15"/>
+    <path d="M296 142v124m100-124v124" stroke-width="8"/>
+    <path d="M286 160h120m-120 96h120" stroke-width="7"/>
+  </g>
+  <!-- baqueta -->
+  <path d="m320 95 31-65" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>
+  <ellipse cx="354" cy="25" rx="11" ry="17" fill="#fff" transform="rotate(25 354 25)"/>
+</svg>
