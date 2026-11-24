@@ -2,51 +2,34 @@
 
 import { useMemo, useState } from "react";
 
-type HomeCalendarProps = {
-  /** Data local de Brasília, no formato YYYY-MM-DD, enviada pela página. */
-  today: string;
+type CalendarEvent = {
+  id: number;
+  title: string;
+  startsAt: string;
+  timeLabel: string | null;
+  location: string | null;
+  description: string | null;
+  kind: string;
+  free: boolean;
 };
 
-type DemoEvent = {
-  id: string;
-  date: string;
-  time: string;
-  title: string;
-  kind: string;
-  location: string;
-  description: string;
+type HomeCalendarProps = {
+  today: string;
+  events: CalendarEvent[];
 };
 
 const WEEKDAYS = ["D", "S", "T", "Q", "Q", "S", "S"];
+const TZ = "America/Sao_Paulo";
 
-// Agenda inteiramente fictícia para demonstrar a navegação do calendário.
-// Em datas com mais de dois horários, a home exibe apenas os dois últimos.
-const DEMO_SCHEDULE = [
-  { day: 2, time: "10:00", title: "Ensaio de bateria", kind: "Ensaio", location: "Sede do bloco · Brasília", description: "Afinação dos surdos e repasse do repertório." },
-  { day: 2, time: "18:30", title: "Roda de samba-reggae", kind: "Encontro", location: "Espaço cultural · Brasília", description: "Encontro musical aberto para percussionistas." },
-  { day: 4, time: "09:30", title: "Oficina de percussão", kind: "Oficina", location: "Espaço BSP · Brasília", description: "Uma manhã dedicada aos fundamentos dos tambores." },
-  { day: 6, time: "16:00", title: "Ensaio de rua", kind: "Ensaio", location: "Parque da Cidade · Brasília", description: "Simulação de cortejo e dinâmica de bateria." },
-  { day: 8, time: "11:00", title: "Vivência de ritmos", kind: "Oficina", location: "Espaço BSP · Brasília", description: "Experimentação de levadas e instrumentos." },
-  { day: 8, time: "17:00", title: "Ensaio geral", kind: "Ensaio", location: "Sede do bloco · Brasília", description: "Ensaio coletivo com todas as alas." },
-  { day: 10, time: "19:00", title: "Encontro da bateria", kind: "Encontro", location: "Sede do bloco · Brasília", description: "Repertório, arranjos e integração do grupo." },
-  { day: 12, time: "10:00", title: "Oficina aberta", kind: "Oficina", location: "Espaço BSP · Brasília", description: "Atividade demonstrativa de iniciação à percussão." },
-  { day: 14, time: "15:30", title: "Cortejo de demonstração", kind: "Cortejo", location: "Eixão do Lazer · Brasília", description: "Apresentação fictícia ao ar livre." },
-  { day: 16, time: "18:00", title: "Ensaio de repertório", kind: "Ensaio", location: "Sede do bloco · Brasília", description: "Preparação de novas músicas para a rua." },
-  { day: 18, time: "20:00", title: "Noite de ritmos", kind: "Show", location: "Praça cultural · Brasília", description: "Apresentação demonstrativa de samba-reggae e axé." },
-  { day: 20, time: "09:00", title: "Aula de fundamentos", kind: "Oficina", location: "Espaço BSP · Brasília", description: "Prática de base, condução e convenções." },
-  { day: 21, time: "16:30", title: "Ensaio aberto", kind: "Ensaio", location: "Parque da Cidade · Brasília", description: "Ensaio fictício acompanhado de perto pelo público." },
-  { day: 23, time: "09:00", title: "Passagem de repertório", kind: "Ensaio", location: "Sede do bloco · Brasília", description: "Primeiro encontro demonstrativo do dia." },
-  { day: 23, time: "14:00", title: "Oficina de timbal e repinique", kind: "Oficina", location: "Espaço BSP · Brasília", description: "Atividade prática para explorar diferentes timbres." },
-  { day: 23, time: "19:30", title: "Roda musical do BSP", kind: "Encontro", location: "Praça cultural · Brasília", description: "Fechamento do dia com música e convivência." },
-  { day: 24, time: "18:30", title: "Ensaio de naipe", kind: "Ensaio", location: "Sede do bloco · Brasília", description: "Ensaio por instrumentos e alinhamento de viradas." },
-  { day: 26, time: "10:00", title: "Oficina de caixa", kind: "Oficina", location: "Espaço BSP · Brasília", description: "Exercícios de técnica e precisão rítmica." },
-  { day: 28, time: "15:00", title: "Cortejo experimental", kind: "Cortejo", location: "Orla do Lago · Brasília", description: "Percurso demonstrativo com a bateria completa." },
-  { day: 28, time: "19:00", title: "Encontro de encerramento", kind: "Encontro", location: "Sede do bloco · Brasília", description: "Confraternização fictícia depois do cortejo." },
-  { day: 30, time: "18:00", title: "Ensaio de fechamento do mês", kind: "Ensaio", location: "Sede do bloco · Brasília", description: "Último encontro demonstrativo do calendário." },
-];
-
-function dateKey(year: number, month: number, day: number) {
-  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+function dateKey(date: Date) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const part = (type: string) => parts.find((item) => item.type === type)?.value ?? "00";
+  return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
 function dateLabel(key: string, options: Intl.DateTimeFormatOptions) {
@@ -57,41 +40,37 @@ function dateLabel(key: string, options: Intl.DateTimeFormatOptions) {
   });
 }
 
-function makeMonthEvents(year: number, month: number): DemoEvent[] {
-  const totalDays = new Date(Date.UTC(year, month, 0)).getUTCDate();
-  return DEMO_SCHEDULE.filter((event) => event.day <= totalDays).map((event, index) => ({
-    ...event,
-    id: `${year}-${month}-${event.day}-${event.time}-${index}`,
-    date: dateKey(year, month, event.day),
-  }));
+function eventBadge(event: CalendarEvent) {
+  if (event.kind === "cortejo" && event.free) return "Cortejo Gratuito";
+  if (!event.free) return "Evento Pago";
+  if (event.kind === "ensaio") return "Ensaio Aberto";
+  if (event.kind === "oficina") return "Oficina";
+  return "Evento Gratuito";
 }
 
-export default function HomeCalendar({ today }: HomeCalendarProps) {
+export default function HomeCalendar({ today, events }: HomeCalendarProps) {
   const [visibleMonth, setVisibleMonth] = useState(() => {
     const [year, month] = today.split("-").map(Number);
     return { year, month };
   });
   const [selectedDate, setSelectedDate] = useState(today);
 
-  const monthEvents = useMemo(
-    () => makeMonthEvents(visibleMonth.year, visibleMonth.month),
-    [visibleMonth],
+  const eventsWithDate = useMemo(
+    () => events.map((event) => ({ ...event, date: dateKey(new Date(event.startsAt)) })),
+    [events],
   );
 
   const eventsByDate = useMemo(() => {
-    const grouped = new Map<string, DemoEvent[]>();
-    for (const event of monthEvents) {
+    const grouped = new Map<string, (CalendarEvent & { date: string })[]>();
+    for (const event of eventsWithDate) {
       const current = grouped.get(event.date) ?? [];
       current.push(event);
       grouped.set(event.date, current);
     }
     return grouped;
-  }, [monthEvents]);
+  }, [eventsWithDate]);
 
-  const selectedEvents = [...(eventsByDate.get(selectedDate) ?? [])]
-    .sort((a, b) => a.time.localeCompare(b.time))
-    .slice(-2);
-
+  const selectedEvents = (eventsByDate.get(selectedDate) ?? []).sort((a, b) => a.startsAt.localeCompare(b.startsAt));
   const firstWeekday = new Date(Date.UTC(visibleMonth.year, visibleMonth.month - 1, 1)).getUTCDay();
   const daysInMonth = new Date(Date.UTC(visibleMonth.year, visibleMonth.month, 0)).getUTCDate();
   const calendarCells: (number | null)[] = [
@@ -109,7 +88,7 @@ export default function HomeCalendar({ today }: HomeCalendarProps) {
     const year = next.getUTCFullYear();
     const month = next.getUTCMonth() + 1;
     setVisibleMonth({ year, month });
-    setSelectedDate(dateKey(year, month, 1));
+    setSelectedDate(dateKey(new Date(Date.UTC(year, month - 1, 1, 12))));
   }
 
   const selectedDateStatus = selectedDate === today
@@ -124,7 +103,7 @@ export default function HomeCalendar({ today }: HomeCalendarProps) {
         <div className="home-calendar__month-header">
           <div>
             <h3 className="home-calendar__month-title">{monthTitle}</h3>
-            <p className="home-calendar__month-hint">Selecione uma data para consultar os eventos</p>
+            <p className="home-calendar__month-hint">Selecione uma data para consultar a programação publicada</p>
           </div>
           <div className="home-calendar__navigation">
             <button type="button" onClick={() => changeMonth(-1)} aria-label="Mês anterior">‹</button>
@@ -139,7 +118,7 @@ export default function HomeCalendar({ today }: HomeCalendarProps) {
         <div className="home-calendar__days">
           {calendarCells.map((day, index) => {
             if (day === null) return <span className="home-calendar__empty" key={`empty-${index}`} />;
-            const key = dateKey(visibleMonth.year, visibleMonth.month, day);
+            const key = `${visibleMonth.year}-${String(visibleMonth.month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
             const count = eventsByDate.get(key)?.length ?? 0;
             const isSelected = key === selectedDate;
             const isToday = key === today;
@@ -147,14 +126,9 @@ export default function HomeCalendar({ today }: HomeCalendarProps) {
               <button
                 key={key}
                 type="button"
-                className={[
-                  "home-calendar__day",
-                  count ? "has-events" : "",
-                  isSelected ? "is-selected" : "",
-                  isToday ? "is-today" : "",
-                ].filter(Boolean).join(" ")}
+                className={["home-calendar__day", count ? "has-events" : "", isSelected ? "is-selected" : "", isToday ? "is-today" : ""].filter(Boolean).join(" ")}
                 onClick={() => setSelectedDate(key)}
-                aria-label={`${day} de ${monthTitle}${count ? `, ${count} eventos` : ", sem eventos demonstrativos"}`}
+                aria-label={`${day} de ${monthTitle}${count ? `, ${count} eventos` : ", sem eventos publicados"}`}
                 aria-pressed={isSelected}
               >
                 <span>{day}</span>
@@ -179,30 +153,29 @@ export default function HomeCalendar({ today }: HomeCalendarProps) {
 
         {selectedEvents.length > 0 ? (
           <div className="home-calendar__event-list">
-            {selectedEvents.map((event) => {
-              const status = selectedDate < today ? "Já aconteceu" : selectedDate === today ? "Hoje" : "Vem aí";
-              return (
-                <article className="home-calendar-event" key={event.id}>
-                  <div className="home-calendar-event__time">{event.time}</div>
-                  <div className="home-calendar-event__body">
-                    <p className="home-calendar-event__status">{status} <span>·</span> {event.kind}</p>
-                    <h4>{event.title}</h4>
-                    <p className="home-calendar-event__location">{event.location}</p>
-                    <p className="home-calendar-event__description">{event.description}</p>
+            {selectedEvents.map((event) => (
+              <article className="home-calendar-event" key={event.id}>
+                <div className="home-calendar-event__time">
+                  <strong>{event.timeLabel || new Date(event.startsAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: TZ })}</strong>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <span className={`home-calendar-event__badge ${!event.free ? "is-paid" : event.kind === "ensaio" ? "is-rehearsal" : ""}`}>{eventBadge(event)}</span>
                   </div>
-                </article>
-              );
-            })}
-            <p className="home-calendar__limit-note">Exibindo até os dois últimos horários desta data.</p>
+                  <h4 className="home-calendar-event__title">{event.title}</h4>
+                  {event.location && <p className="home-calendar-event__location">{event.location}</p>}
+                  {event.description && <p className="home-calendar-event__description">{event.description}</p>}
+                </div>
+              </article>
+            ))}
           </div>
         ) : (
           <div className="home-calendar__empty-state">
-            <span aria-hidden="true">♪</span>
-            <p>Não há evento demonstrativo cadastrado para esta data.</p>
-            <small>Escolha outro dia do mês para consultar a programação fictícia.</small>
+            <span aria-hidden="true">♫</span>
+            <p>{events.length ? "Nenhum compromisso publicado para esta data." : "A próxima programação será anunciada por aqui. A agenda é atualizada pela equipe do bloco."}</p>
           </div>
         )}
-        <p className="home-calendar__disclaimer">Agenda demonstrativa: todos os eventos exibidos são fictícios.</p>
+        <a href="/galeria#agenda" className="home-calendar__more">Ver agenda completa <span aria-hidden="true">→</span></a>
       </section>
     </div>
   );

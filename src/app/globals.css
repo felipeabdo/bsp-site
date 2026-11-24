@@ -1247,6 +1247,42 @@ textarea.input {
   font-size: 1.15rem;
 }
 .home-calendar-event__body { min-width: 0; }
+.home-calendar-event__badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(40, 121, 159, 0.11);
+  color: #28799F;
+  padding: 0.28rem 0.62rem;
+  font-size: 0.64rem;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.home-calendar-event__badge.is-paid {
+  background: rgba(249, 131, 78, 0.15);
+  color: #B84F25;
+}
+.home-calendar-event__badge.is-rehearsal {
+  background: rgba(40, 121, 159, 0.12);
+  color: #185A79;
+}
+.home-calendar__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  align-self: flex-start;
+  margin-top: 1rem;
+  color: #E36F3D;
+  font-size: 0.82rem;
+  font-weight: 950;
+  text-decoration: underline;
+  text-underline-offset: 0.22rem;
+}
+.home-calendar__more span { transition: transform 180ms ease; }
+.home-calendar__more:hover span { transform: translateX(3px); }
+
 .home-calendar-event__status {
   color: #E36F3D;
   font-size: 0.68rem;

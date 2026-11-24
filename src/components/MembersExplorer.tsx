@@ -9,8 +9,8 @@ import { displayName, fullName } from "@/lib/member-utils";
 
 const TABS = [
   { key: "fundador", label: "Fundadores", empty: "Os fundadores ainda vão aparecer por aqui." },
-  { key: "atual", label: "Formação atual", empty: "Ninguém da formação atual se cadastrou ainda. Seja o primeiro!" },
-  { key: "ex", label: "Já passaram pelo bloco", empty: "Quem já passou pelo bloco pode se cadastrar e contar sua história." },
+  { key: "atual", label: "Formação atual", empty: "Nenhum integrante da formação atual está disponível para exibição neste filtro." },
+  { key: "ex", label: "Já passaram pelo bloco", empty: "Ainda não há ex-integrantes disponíveis para exibição neste filtro." },
 ] as const;
 
 const TONES = ["bg-sol text-creme", "bg-lago text-creme", "bg-areia text-tinta"];
@@ -75,7 +75,6 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
       {list.length === 0 ? (
         <div className="mt-10 rounded-[2rem] bg-areia p-10 text-center">
           <p className="text-lg font-medium">{TABS.find((t) => t.key === tab)?.empty}</p>
-          <Link href="/cadastro" className="btn btn-sol mt-5">Cadastrar como integrante</Link>
         </div>
       ) : (
         <ul className="mt-10 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">

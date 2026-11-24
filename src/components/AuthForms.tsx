@@ -23,7 +23,7 @@ export function LoginForm() {
       setLoading(false);
       return;
     }
-    router.push("/configuracoes?aba=carteirinha");
+    router.push("/area-integrante");
     router.refresh();
   }
 
@@ -39,9 +39,11 @@ export function LoginForm() {
       </div>
       {error && <p className="rounded-2xl bg-sol-100 p-3 text-sm font-semibold text-sol-600" role="alert">{error}</p>}
       <button className="btn btn-sol w-full" disabled={loading}>{loading ? "Entrando…" : "Entrar"}</button>
-      <p className="text-center text-sm text-tinta/70">
-        Ainda não tem conta? <Link href="/cadastro" className="font-bold text-lago underline">Cadastre-se como integrante</Link>
-      </p>
+      <div className="rounded-3xl bg-sol/10 p-5 text-center">
+        <p className="font-display text-2xl text-lago">Tem tambor? Tem carteirinha.</p>
+        <p className="mt-1 text-sm text-tinta/70">O cadastro é exclusivo para quem já faz parte do bloco.</p>
+        <Link href="/cadastro" className="mt-3 inline-flex font-bold text-lago underline underline-offset-4">Quero criar meu acesso de integrante</Link>
+      </div>
     </form>
   );
 }
@@ -119,7 +121,7 @@ export function RegisterForm() {
       setLoading(false);
       return;
     }
-    router.push("/configuracoes?aba=fotos&novo=1");
+    router.push("/area-integrante?novo=1");
     router.refresh();
   }
 

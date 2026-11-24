@@ -6,7 +6,9 @@ import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Contato" };
 
-export default function ContatoPage() {
+export default async function ContatoPage({ searchParams }: { searchParams: Promise<{ assunto?: string }> }) {
+  const params = await searchParams;
+  const defaultSubject = params.assunto === "contratar" ? "Contratar o bloco para evento" : "";
   const channels = [
     { t: "Instagram", v: `@${SITE.instagram}`, h: SITE.instagramUrl, c: "bg-sol text-creme" },
     { t: "WhatsApp", v: SITE.whatsappLabel, h: `https://wa.me/${SITE.whatsapp}`, c: "bg-lago text-creme" },
@@ -39,7 +41,7 @@ export default function ContatoPage() {
           </div>
           <div className="rounded-[2.5rem] bg-areia p-6 sm:p-10">
             <h2 className="font-display text-4xl text-lago">Envie sua mensagem</h2>
-            <div className="mt-6"><ContactForm /></div>
+            <div className="mt-6"><ContactForm defaultSubject={defaultSubject} /></div>
           </div>
         </div>
       </section>

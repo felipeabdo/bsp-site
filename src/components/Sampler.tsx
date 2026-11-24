@@ -190,7 +190,7 @@ const DEFAULT_CONFIGURATIONS = Object.fromEntries(INSTRUMENTS.map((instrument) =
   composition: normalizeComposition(null),
 }])) as Partial<Record<Voice, InstrumentConfig>>;
 
-export default function Sampler() {
+export default function Sampler({ compact = false, featuredVoices }: { compact?: boolean; featuredVoices?: Voice[] } = {}) {
   const [active, setActive] = useState<Voice[]>([]);
   const [bpm, setBpm] = useState(BPM_DEFAULT);
   const [step, setStep] = useState(-1);
@@ -363,7 +363,7 @@ export default function Sampler() {
     if (next.length === 0) stop(); else void startLoop();
   };
   const all = () => {
-    const ids = instrumentsRef.current.filter((instrument) => {
+    const ids = instrumentsRef.current.filter((instrument) => visibleVoices.includes(instrument.id)).filter((instrument) => {
       const config = configurationsRef.current[instrument.id];
       if (!config) return false;
       const composition = config.composition;
@@ -376,24 +376,44 @@ export default function Sampler() {
     activeRef.current = ids; setActive(ids); void startLoop();
   };
   const running = active.length > 0;
+  const visibleVoices = compact
+    ? (featuredVoices ?? ["surdo", "repinique", "timbal", "caixa"] as Voice[])
+    : instruments.map((instrument) => instrument.id);
+  const visibleInstruments = instruments.filter((instrument) => visibleVoices.includes(instrument.id));
 
   return (
     <div className="w-full min-w-0">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-lago/10 bg-white/80 px-4 py-3">
-        <div>
-          <p className="text-sm font-bold text-lago">Arranjos publicados pelo estúdio BSP</p>
-          <p className="text-xs text-tinta/55">{lastPublicSync ? `Sincronizado em ${new Date(lastPublicSync).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}` : "Carregando os arranjos publicados…"}</p>
+      {!compact && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-lago/10 bg-white/80 px-4 py-3">
+          <div>
+            <p className="text-sm font-bold text-lago">Arranjos publicados pelo estúdio BSP</p>
+            <p className="text-xs text-tinta/55">{lastPublicSync ? `Sincronizado em ${new Date(lastPublicSync).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}` : "Carregando os arranjos publicados…"}</p>
+          </div>
+          <button type="button" onClick={() => void syncPublicNow()} disabled={publicSyncing} className="btn btn-creme">{publicSyncing ? "Atualizando…" : "↻ Atualizar arranjos"}</button>
         </div>
-        <button type="button" onClick={() => void syncPublicNow()} disabled={publicSyncing} className="btn btn-creme">{publicSyncing ? "Atualizando…" : "↻ Atualizar arranjos"}</button>
-      </div>
-      <div className="relative min-w-0 overflow-hidden rounded-[2.5rem] bg-tinta p-6 text-creme sm:p-10">
-        <Spiral className={`absolute -right-24 -top-24 h-80 w-80 text-sol-600 ${running ? "animate-spin-slow" : ""}`} stroke={7} />
-        <div className="relative grid items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
-          <div><span className="chip bg-sol text-creme">Estúdio BSP · simulação em samba-reggae</span><h3 className="font-display mt-4 text-4xl sm:text-5xl">Monte a bateria e aperte o play</h3><p className="mt-3 max-w-xl text-creme/85">Cada instrumento pode combinar vários tipos de som, gravações reais e timbres sintéticos. Guitarra, baixo e metais também podem receber linhas melódicas; a guitarra toca sua batida base e os acordes definidos pelo bloco.</p></div>
-          <div className="space-y-5 rounded-3xl bg-creme/10 p-5"><div className="flex flex-wrap gap-3"><button onClick={all} className="btn btn-sol">▶ Banda completa</button><button onClick={stop} className="btn btn-creme" disabled={!running}>■ Parar</button></div><label className="block"><span className="flex justify-between text-sm font-semibold"><span>Andamento</span><span>{bpm} BPM</span></span><input type="range" min={40} max={220} value={bpm} onChange={(event) => setBpm(Number(event.target.value))} className="mt-2 w-full accent-[#F9834E]" /></label><div className="flex gap-1.5" aria-hidden="true">{Array.from({ length: 16 }).map((_, index) => <span key={index} className={`h-3 flex-1 rounded-full transition-all duration-75 ${step === index ? "scale-y-[2] bg-sol" : index % 4 === 0 ? "bg-creme/50" : "bg-creme/20"}`} />)}</div></div>
+      )}
+      {compact ? (
+        <div className="relative min-w-0 overflow-hidden rounded-[2rem] bg-lago p-5 text-creme sm:p-7">
+          <Spiral className={`pointer-events-none absolute -right-12 -top-14 h-52 w-52 text-sol/30 ${running ? "animate-spin-slow" : ""}`} stroke={7} />
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div><span className="chip bg-sol text-creme">Sons & Inspirações</span><h3 className="font-display mt-3 text-3xl sm:text-4xl">Sinta a pressão da bateria</h3><p className="mt-2 max-w-xl text-sm text-creme/80">Uma demonstração interativa dos naipes que dão o pulso e o brilho do Santo Pecado.</p></div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              <button type="button" onClick={all} className="btn btn-sol">{running ? "▶ Tocar novamente" : "▶ Ouvir a bateria"}</button>
+              <button type="button" onClick={stop} className="btn btn-creme" disabled={!running}>Parar</button>
+            </div>
+          </div>
+          <div className="relative mt-5 flex gap-1.5" aria-label="Progresso da batida">{Array.from({ length: 16 }).map((_, index) => <span key={index} className={`h-2.5 flex-1 rounded-full transition-all duration-75 ${step === index ? "scale-y-[1.7] bg-sol" : index % 4 === 0 ? "bg-creme/50" : "bg-creme/20"}`} />)}</div>
         </div>
-      </div>
-      <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{instruments.map((instrument) => {
+      ) : (
+        <div className="relative min-w-0 overflow-hidden rounded-[2.5rem] bg-tinta p-6 text-creme sm:p-10">
+          <Spiral className={`absolute -right-24 -top-24 h-80 w-80 text-sol-600 ${running ? "animate-spin-slow" : ""}`} stroke={7} />
+          <div className="relative grid items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
+            <div><span className="chip bg-sol text-creme">Estúdio BSP · simulação em samba-reggae</span><h3 className="font-display mt-4 text-4xl sm:text-5xl">Monte a bateria e aperte o play</h3><p className="mt-3 max-w-xl text-creme/85">Cada instrumento pode combinar vários tipos de som, gravações reais e timbres sintéticos. Guitarra, baixo e metais também podem receber linhas melódicas; a guitarra toca sua batida base e os acordes definidos pelo bloco.</p></div>
+            <div className="space-y-5 rounded-3xl bg-creme/10 p-5"><div className="flex flex-wrap gap-3"><button onClick={all} className="btn btn-sol">▶ Banda completa</button><button onClick={stop} className="btn btn-creme" disabled={!running}>■ Parar</button></div><label className="block"><span className="flex justify-between text-sm font-semibold"><span>Andamento</span><span>{bpm} BPM</span></span><input type="range" min={40} max={220} value={bpm} onChange={(event) => setBpm(Number(event.target.value))} className="mt-2 w-full accent-[#F9834E]" /></label><div className="flex gap-1.5" aria-hidden="true">{Array.from({ length: 16 }).map((_, index) => <span key={index} className={`h-3 flex-1 rounded-full transition-all duration-75 ${step === index ? "scale-y-[2] bg-sol" : index % 4 === 0 ? "bg-creme/50" : "bg-creme/20"}`} />)}</div></div>
+          </div>
+        </div>
+      )}
+      <ul className={`${compact ? "mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" : "mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"}`}>{visibleInstruments.map((instrument) => {
         const config = configurations[instrument.id];
         const playable = Boolean(config && (
           config.soundSlots.some((slot) => slot.pattern.some((step) => step > 0))
@@ -402,7 +422,7 @@ export default function Sampler() {
           || config.composition.chords.some(Boolean)
           || config.composition.guitarBase.some((step) => step > 0)
         ));
-        return <InstrumentCard key={instrument.id} inst={instrument} config={config} playable={playable} on={active.includes(instrument.id)} step={step} onToggle={() => toggle(instrument.id)} />;
+        return <InstrumentCard key={instrument.id} inst={instrument} config={config} playable={playable} on={active.includes(instrument.id)} step={step} compact={compact} onToggle={() => toggle(instrument.id)} />;
       })}</ul>
     </div>
   );
@@ -414,35 +434,39 @@ const CARD = {
   areia: "bg-areia text-tinta",
 };
 
-function InstrumentCard({ inst, config, playable, on, step, onToggle }: { inst: Instrument; config?: InstrumentConfig; playable: boolean; on: boolean; step: number; onToggle: () => void }) {
+function InstrumentCard({ inst, config, playable, on, step, compact = false, onToggle }: { inst: Instrument; config?: InstrumentConfig; playable: boolean; on: boolean; step: number; compact?: boolean; onToggle: () => void }) {
   const dark = inst.color !== "areia";
   return (
-    <li className={`relative flex flex-col overflow-hidden rounded-[2rem] p-6 transition ${CARD[inst.color]} ${on ? "ring-4 ring-tinta/80 ring-offset-4 ring-offset-creme" : ""}`}>
+    <li className={`relative flex min-w-0 flex-col overflow-hidden rounded-[2rem] ${compact ? "p-5" : "p-6"} ${CARD[inst.color]} ${on ? "ring-4 ring-tinta/80 ring-offset-4 ring-offset-creme" : ""}`}>
       <Spiral className={`pointer-events-none absolute -right-10 -top-10 h-36 w-36 opacity-20 ${on ? "animate-spin-slow" : ""}`} stroke={8} />
       <div className="relative flex items-start justify-between gap-3">
-        <div className={`grid h-16 w-16 place-items-center rounded-2xl ${dark ? "bg-creme text-tinta" : "bg-sol text-creme"} ${on ? "animate-float" : ""}`}>
+        <div className={`grid ${compact ? "h-12 w-12 rounded-xl" : "h-16 w-16 rounded-2xl"} place-items-center ${dark ? "bg-creme text-tinta" : "bg-sol text-creme"} ${on ? "animate-float" : ""}`}>
           <Icon kind={inst.icon} />
         </div>
-        <span className={`chip ${dark ? "bg-creme/20" : "bg-tinta/10"}`}>{inst.family}</span>
+        {!compact && <span className={`chip ${dark ? "bg-creme/20" : "bg-tinta/10"}`}>{inst.family}</span>}
       </div>
-      <h3 className="font-display relative mt-5 text-3xl">{inst.name}</h3>
+      <h3 className={`font-display relative ${compact ? "mt-3 text-2xl" : "mt-5 text-3xl"}`}>{inst.name}</h3>
       <p className={`relative text-sm font-bold uppercase tracking-wider ${dark ? "text-creme/80" : "text-sol-600"}`}>{inst.role}</p>
-      <p className="relative mt-3 flex-1 leading-relaxed opacity-95">{inst.detail}</p>
+      {!compact && <p className="relative mt-3 flex-1 leading-relaxed opacity-95">{inst.detail}</p>}
 
       {playable ? (
         <>
-          <div className="relative mt-5 space-y-2" aria-label="Padrões públicos salvos">
-            {(config?.soundSlots ?? []).slice(0, 10).map((slot) => <div key={slot.id}>
-              <div className="mb-1 flex items-center justify-between gap-2 text-[10px] font-bold uppercase tracking-wider opacity-80"><span className="truncate">{slot.name}</span><span>{slot.source === "sample" ? "Áudio real" : "Timbre BSP"}</span></div>
-              <div className="public-pattern-grid w-full min-w-0">{slot.pattern.map((value, index) => <span key={index} className={`h-2.5 rounded-sm transition ${on && step === index ? "ring-2 ring-tinta" : ""} ${value === 2 ? (dark ? "bg-sol" : "bg-sol-700") : value === 1 ? (dark ? "bg-creme/80" : "bg-lago") : dark ? "bg-creme/15" : "bg-tinta/10"}`} />)}</div>
-            </div>)}
-            {config?.composition.notes.some(Boolean) && <p className="pt-1 text-xs font-semibold opacity-90">♫ Melodia: {config.composition.notes.filter(Boolean).slice(0, 4).join(" · ")}{config.composition.notes.filter(Boolean).length > 4 ? " …" : ""}</p>}
-            {config?.composition.bassNotes.some(Boolean) && <p className="text-xs font-semibold opacity-90">♫ Linha grave: {config.composition.bassNotes.filter(Boolean).slice(0, 4).join(" · ")}{config.composition.bassNotes.filter(Boolean).length > 4 ? " …" : ""}</p>}
-            {config?.composition.chords.some(Boolean) && <p className="text-xs font-semibold opacity-90">Acordes: {config.composition.chords.filter(Boolean).slice(0, 4).join(" · ")}{config.composition.chords.filter(Boolean).length > 4 ? " …" : ""}</p>}
-            {config?.composition.guitarBase.some((step) => step > 0) && <p className="text-xs font-semibold opacity-90">↗ Batida base de acompanhamento publicada</p>}
-          </div>
-          <button onClick={onToggle} className={`btn relative mt-5 ${on ? "btn-creme" : dark ? "btn-creme" : "btn-sol"}`} aria-pressed={on}>
-            {on ? "■ Parar este som" : "▶ Ouvir no samba-reggae"}
+          {!compact && (
+            <div className="relative mt-5 space-y-2" aria-label="Padrões públicos salvos">
+              {(config?.soundSlots ?? []).slice(0, 10).map((slot) => (
+                <div key={slot.id}>
+                  <div className="mb-1 flex items-center justify-between gap-2 text-[10px] font-bold uppercase tracking-wider opacity-80"><span className="truncate">{slot.name}</span><span>{slot.source === "sample" ? "Áudio real" : "Timbre BSP"}</span></div>
+                  <div className="public-pattern-grid w-full min-w-0">{slot.pattern.map((value, index) => <span key={index} className={`h-2.5 rounded-sm transition ${on && step === index ? "ring-2 ring-tinta" : ""} ${value === 2 ? (dark ? "bg-sol" : "bg-sol-700") : value === 1 ? (dark ? "bg-creme/80" : "bg-lago") : dark ? "bg-creme/15" : "bg-tinta/10"}`} />)}</div>
+                </div>
+              ))}
+              {config?.composition.notes.some(Boolean) && <p className="pt-1 text-xs font-semibold opacity-90">♫ Melodia: {config.composition.notes.filter(Boolean).slice(0, 4).join(" · ")}{config.composition.notes.filter(Boolean).length > 4 ? " …" : ""}</p>}
+              {config?.composition.bassNotes.some(Boolean) && <p className="text-xs font-semibold opacity-90">♫ Linha grave: {config.composition.bassNotes.filter(Boolean).slice(0, 4).join(" · ")}{config.composition.bassNotes.filter(Boolean).length > 4 ? " …" : ""}</p>}
+              {config?.composition.chords.some(Boolean) && <p className="text-xs font-semibold opacity-90">Acordes: {config.composition.chords.filter(Boolean).slice(0, 4).join(" · ")}{config.composition.chords.filter(Boolean).length > 4 ? " …" : ""}</p>}
+              {config?.composition.guitarBase.some((step) => step > 0) && <p className="text-xs font-semibold opacity-90">↗ Batida base de acompanhamento publicada</p>}
+            </div>
+          )}
+          <button onClick={onToggle} className={`btn relative mt-4 ${on ? "btn-creme" : dark ? "btn-creme" : "btn-sol"}`} aria-pressed={on}>
+            {on ? "■ Parar" : compact ? "▶ Ouvir este naipe" : "▶ Ouvir no samba-reggae"}
           </button>
         </>
       ) : (

@@ -109,7 +109,11 @@ export default function Header({ user }: { user: HeaderUser }) {
           </Link>
 
           <nav className="hidden items-center gap-1 min-[1181px]:flex" aria-label="Principal">
-            {NAV.map((item) => (
+            {user ? (
+              <Link href="/area-integrante" aria-current="page" className="relative rounded-full bg-lago px-4 py-2 text-[0.9rem] font-extrabold text-creme">
+                Área do Integrante
+              </Link>
+            ) : NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -159,12 +163,12 @@ export default function Header({ user }: { user: HeaderUser }) {
                 )}
               </div>
             ) : (
-              <Link href="/entrar" className="header-entry-btn hidden sm:inline-flex">
+              <Link href="/entrar" className="header-entry-btn hidden min-[1181px]:inline-flex" aria-label="Área do Integrante">
                 <svg viewBox="0 0 24 24" aria-hidden="true" className="h-[1.15em] w-[1.15em]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="8" r="4" />
                   <path d="M4.5 21a7.5 7.5 0 0 1 15 0" />
                 </svg>
-                Entrar
+                Área do Integrante
               </Link>
             )}
 
@@ -215,7 +219,7 @@ export default function Header({ user }: { user: HeaderUser }) {
           </div>
 
           <ul className="my-7 flex flex-1 flex-col justify-center px-0 sm:my-10">
-            {NAV.map((item, i) => (
+            {(user ? [{ href: "/area-integrante", label: "Área do Integrante" }] : NAV).map((item, i) => (
               <li
                 key={item.href}
                 style={{ transitionDelay: open ? `${250 + i * 60}ms` : "0ms" }}
@@ -228,7 +232,6 @@ export default function Header({ user }: { user: HeaderUser }) {
                   className={`mobile-menu-link flex items-center justify-between py-3 ${isActive(item.href) ? "text-sol" : "text-creme"}`}
                 >
                   <span>{item.label}</span>
-                  <small>0{i + 1}</small>
                 </Link>
               </li>
             ))}
@@ -236,23 +239,13 @@ export default function Header({ user }: { user: HeaderUser }) {
 
           <div className="mobile-menu-footer flex flex-col gap-3 sm:flex-row">
             {user ? (
-              <>
-                <Link href="/configuracoes?aba=carteirinha" className="mobile-menu-action mobile-menu-action--cream flex-1" onClick={() => setOpen(false)}>
-                  Minha carteirinha · {user.memberId}
-                </Link>
-                <button onClick={logout} className="mobile-menu-action mobile-menu-action--ghost flex-1">
-                  Sair
-                </button>
-              </>
+              <button onClick={logout} className="mobile-menu-action mobile-menu-action--ghost flex-1">
+                Sair
+              </button>
             ) : (
-              <>
-                <Link href="/entrar" className="mobile-menu-action mobile-menu-action--cream flex-1" onClick={() => setOpen(false)}>
-                  Entrar
-                </Link>
-                <Link href="/cadastro" className="mobile-menu-action mobile-menu-action--ghost flex-1" onClick={() => setOpen(false)}>
-                  Cadastrar como integrante
-                </Link>
-              </>
+              <Link href="/entrar" className="mobile-menu-action mobile-menu-action--cream flex-1" onClick={() => setOpen(false)}>
+                Área do Integrante
+              </Link>
             )}
           </div>
         </div>

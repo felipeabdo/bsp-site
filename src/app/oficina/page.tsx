@@ -1,21 +1,37 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LogoMark, Spiral, Waves } from "@/components/art";
-import { CopyButton, OficinaForm } from "@/components/Forms";
+import { OficinaForm } from "@/components/Forms";
 import { MemberImage } from "@/components/silhouettes";
 import { getMember } from "@/lib/members";
-import { OFICINA, SITE } from "@/lib/site";
+import { OFICINA } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Oficina BSP" };
+export const metadata: Metadata = {
+  title: "Oficina BSP · Aprenda samba-reggae",
+  description: "Aprenda samba-reggae e axé do zero com o Mestre Reinaldo Bráz, na Oficina do Bloco Santo Pecado em Brasília.",
+};
 export const dynamic = "force-dynamic";
 
-const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 });
+const INSTRUMENTS = [
+  { name: "Surdo", phrase: "O coração grave que faz o peito vibrar.", detail: "Aprenda a marcar o pulso e construir o chão da bateria.", tone: "bg-sol text-creme" },
+  { name: "Repinique", phrase: "O chamado e o brilho das viradas.", detail: "Descubra os sinais, as respostas e os desenhos que conduzem a roda.", tone: "bg-lago text-creme" },
+  { name: "Timbal", phrase: "A agilidade e o swing das mãos.", detail: "Trabalhe coordenação, acentos e a conversa rítmica das mãos.", tone: "bg-areia text-tinta" },
+  { name: "Caixa", phrase: "A cadência e a pressão constante.", detail: "Construa precisão, resistência e a pulsação que costura os naipes.", tone: "bg-tinta text-creme" },
+];
 
-const STEPS = [
-  ["Pré-inscrição", "Preencha o formulário abaixo com seus dados e o instrumento que quer aprender."],
-  ["Conversa e aula experimental", "A coordenação chama você no WhatsApp para combinar turma, horário e uma primeira vivência."],
-  ["Matrícula e primeira mensalidade", "Pague pelo Pix (ou outro meio combinado) e envie o comprovante."],
-  ["Entre para a roda", "Receba seu instrumento, ritmo e, no futuro, o convite para sair no cortejo com o bloco."],
+const FAQ = [
+  {
+    question: "Preciso comprar instrumento?",
+    answer: "Não. A Oficina BSP disponibiliza instrumentos para você começar nas aulas. A equipe orienta sobre os próximos passos conforme sua evolução.",
+  },
+  {
+    question: "E se eu nunca tiver tocado nada na vida?",
+    answer: "Pode chegar sem experiência. O aprendizado começa pelo básico: como segurar a baqueta, reconhecer o pulso e tocar junto com os outros naipes.",
+  },
+  {
+    question: "Posso fazer uma aula experimental?",
+    answer: "Sim. Depois da pré-inscrição, a coordenação conversa com você para combinar a primeira vivência e verificar a disponibilidade da turma.",
+  },
 ];
 
 export default async function OficinaPage() {
@@ -23,35 +39,28 @@ export default async function OficinaPage() {
 
   return (
     <>
-      {/* HERO com o mestre */}
-      <section className="relative overflow-hidden bg-lago text-creme">
-        <LogoMark className="pointer-events-none absolute -left-40 -top-32 h-[40rem] w-[45rem] text-creme/12" />
-        <Waves className="pointer-events-none absolute -bottom-6 left-0 h-40 w-full text-creme/30" />
-        <div className="container-bsp section-pad relative grid items-center gap-10 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:py-24">
+      {/* HERO de conversão */}
+      <section className="relative isolate overflow-hidden bg-lago text-creme">
+        <LogoMark className="pointer-events-none absolute -left-40 -top-32 -z-10 h-[40rem] w-[45rem] text-creme/10" />
+        <Waves className="pointer-events-none absolute -bottom-6 left-0 h-40 w-full text-creme/20" />
+        <div className="container-bsp section-pad relative grid items-center gap-10 py-14 lg:grid-cols-[1.15fr_0.85fr] lg:py-24">
           <div className="order-2 lg:order-1">
-            <span className="chip bg-sol text-creme">Oficina BSP</span>
-            <h1 className="font-display mt-5 text-[clamp(3.2rem,9vw,7rem)] uppercase">
-              <span className="tilt">Oficina</span> <span className="tilt text-sol">BSP</span>
+            <span className="chip bg-sol text-creme">Oficina BSP · Brasília</span>
+            <h1 className="font-display mt-5 max-w-4xl text-[clamp(2.8rem,7vw,5.8rem)] leading-[1.04]">
+              Nunca tocou um tambor? <span className="text-sol">A gente te coloca para fazer Brasília tremer.</span>
             </h1>
-            <p className="mt-4 text-xl font-medium sm:text-2xl">
-              Aprenda samba-reggae com quem comanda a bateria do Bloco Santo Pecado.
+            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-creme/90 sm:text-xl">
+              Aprenda a linguagem do samba-reggae e do axé do zero, na prática, com o Mestre Reinaldo Bráz — o mesmo método que transformou 23 amigos sem experiência em uma big band que já dividiu palco com Saulo, Tomate e Araketu.
             </p>
-            <div className="mt-6 rounded-3xl bg-creme/10 p-5 backdrop-blur">
-              <p className="text-sm font-semibold uppercase tracking-widest text-sol">Com o mestre</p>
-              <p className="font-display text-4xl sm:text-5xl">Reinaldo Bráz</p>
-              <p className="mt-2 text-creme/90">
-                Mestre do Bloco Santo Pecado, conduz a bateria, cria os arranjos e ensina a linguagem do
-                samba-reggae a quem nunca tocou — e a quem já toca.
-              </p>
-            </div>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#inscricao" className="btn btn-sol">Quero participar</a>
-              <a href="#valores" className="btn btn-creme">Ver valores e pagamento</a>
+              <a href="#inscricao" className="btn btn-sol">Garantir minha vaga na próxima turma <span aria-hidden="true">→</span></a>
+              <a href="#nipes" className="btn btn-creme">Conhecer os instrumentos</a>
             </div>
+            <p className="mt-4 text-sm font-semibold text-creme/65">Sem experiência prévia. Comece no seu ritmo.</p>
           </div>
 
           <div className="relative order-1 mx-auto w-full max-w-sm lg:order-2 lg:max-w-md">
-            <div className="absolute inset-x-4 top-8 aspect-square animate-spin-slow rounded-full border-[28px] border-sol/80" />
+            <div className="absolute inset-x-4 top-8 aspect-square rounded-full border-[24px] border-sol/80" />
             <div className="relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[2.5rem] border-8 border-creme bg-areia text-lago shadow-2xl">
               {mestre ? (
                 <div className="flex h-full w-full items-end justify-center px-4 pt-10">
@@ -59,113 +68,126 @@ export default async function OficinaPage() {
                 </div>
               ) : null}
             </div>
-            <span className="absolute -left-3 bottom-16 -rotate-6 rounded-2xl bg-sol px-4 py-2 font-display text-xl uppercase shadow-xl">Mestre Reinaldo Bráz</span>
+            <span className="absolute -bottom-3 -left-4 -rotate-6 rounded-2xl bg-sol px-4 py-2 font-display text-xl uppercase shadow-xl">Mestre Reinaldo Bráz</span>
             <LogoMark className="absolute -right-4 top-2 h-20 w-20 rotate-6 text-creme" wing="#F9834E" />
           </div>
         </div>
       </section>
 
-      {/* O que é */}
-      <section className="section-pad py-20 sm:py-24">
+      {/* Quebra de objeções */}
+      <section className="section-pad py-16 sm:py-24" id="para-quem-e">
         <div className="container-bsp">
-          <span className="chip bg-sol-100 text-sol-600">Para quem é</span>
-          <h2 className="font-display mt-4 max-w-3xl text-5xl text-lago sm:text-6xl">Ninguém começa sabendo — o Santo Pecado também não.</h2>
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {[
-              ["Sem experiência", "A maioria dos fundadores nunca tinha tocado. A oficina parte do zero e respeita o tempo de cada pessoa.", "bg-sol text-creme"],
-              ["Instrumentos reais", "Surdo, dobra, repinique, timbal, caixa, guira e percussão geral — e como eles conversam no samba-reggae.", "bg-lago text-creme"],
-              ["Prática de bloco", "Aulas pensadas para a roda: repertório do bloco, convenções, escuta e postura de bateria.", "bg-areia text-tinta"],
-            ].map(([t, d, c]) => (
-              <div key={t} className={`${c} rounded-[2rem] p-7`}>
-                <h3 className="font-display text-3xl">{t}</h3>
-                <p className="mt-3 leading-relaxed opacity-95">{d}</p>
-              </div>
-            ))}
+          <span className="chip bg-sol-100 text-sol-600">Para quem é a Oficina</span>
+          <h2 className="font-display mt-4 max-w-4xl text-4xl text-lago sm:text-5xl lg:text-6xl">Seu primeiro toque pode começar aqui.</h2>
+          <div className="mt-9 grid gap-5 md:grid-cols-3">
+            <article className="rounded-[2rem] bg-sol p-7 text-creme">
+              <span className="text-3xl" aria-hidden="true">01</span>
+              <h3 className="font-display mt-3 text-3xl">Zero experiência necessária</h3>
+              <p className="mt-3 leading-relaxed">Você aprende a segurar a baqueta, reconhecer o pulso e construir seu ritmo desde o começo.</p>
+            </article>
+            <article className="rounded-[2rem] bg-lago p-7 text-creme">
+              <span className="text-3xl" aria-hidden="true">02</span>
+              <h3 className="font-display mt-3 text-3xl">Instrumentos disponíveis</h3>
+              <p className="mt-3 leading-relaxed">Não precisa ter instrumento próprio para começar. Os instrumentos da oficina estão disponíveis durante as aulas.</p>
+            </article>
+            <article className="rounded-[2rem] bg-areia p-7 text-tinta ring-1 ring-tinta/10">
+              <span className="text-3xl text-sol" aria-hidden="true">03</span>
+              <h3 className="font-display mt-3 text-3xl">Comunidade e palco</h3>
+              <p className="mt-3 leading-relaxed">Evolua nos ensaios, aprenda em grupo e tenha a chance de integrar o cortejo oficial do bloco.</p>
+            </article>
           </div>
         </div>
       </section>
 
-      {/* Como participar */}
-      <section className="section-pad bg-areia/70 py-20 sm:py-24" id="como-participar">
+      {/* Os quatro naipes */}
+      <section className="section-pad scroll-mt-24 bg-areia/70 py-16 sm:py-24" id="nipes">
         <div className="container-bsp">
-          <span className="chip bg-lago text-creme">Como participar</span>
-          <h2 className="font-display mt-4 text-5xl text-lago sm:text-6xl">Quatro passos até a roda</h2>
-          <ol className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map(([t, d], i) => (
-              <li key={t} className="relative rounded-[2rem] bg-white p-7 ring-1 ring-tinta/5">
-                <span className="font-display text-6xl text-sol">{i + 1}</span>
-                <h3 className="font-display mt-2 text-2xl">{t}</h3>
-                <p className="mt-2 text-tinta/75">{d}</p>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-6 rounded-2xl bg-white p-4 text-sm font-medium text-tinta/80">{OFICINA.schedule}.</p>
-        </div>
-      </section>
-
-      {/* Valores e pagamento */}
-      <section className="section-pad scroll-mt-24 py-20 sm:py-28" id="valores">
-        <div className="container-bsp">
-          <span className="chip bg-sol-100 text-sol-600">Investimento</span>
-          <h2 className="font-display mt-4 text-5xl text-lago sm:text-6xl">Valores e formas de pagamento</h2>
-          {!OFICINA.valuesConfirmed && (
-            <p className="mt-4 inline-block rounded-2xl bg-sol-100 px-4 py-2 text-sm font-semibold text-sol-600">
-              Valores ilustrativos — confirme com a coordenação antes de pagar.
-            </p>
-          )}
-
-          <div className="mt-10 grid gap-5 lg:grid-cols-[1.4fr_1fr]">
-            <div className="grid gap-5 sm:grid-cols-3 lg:grid-cols-3">
-              {[
-                ["Matrícula", brl(OFICINA.matricula), "pagamento único", "bg-areia text-tinta"],
-                ["Mensalidade", brl(OFICINA.mensalidade), "por mês", "bg-lago text-creme"],
-                ["Mensalidade à vista", brl(OFICINA.mensalidadeAvista), "por mês, no plano trimestral", "bg-sol text-creme"],
-              ].map(([t, v, s, c]) => (
-                <div key={t} className={`${c} flex flex-col justify-between rounded-[2rem] p-6`}>
-                  <h3 className="text-sm font-bold uppercase tracking-widest opacity-80">{t}</h3>
-                  <p className="font-display mt-6 text-5xl">{v}</p>
-                  <p className="mt-1 text-sm font-semibold opacity-80">{s}</p>
+          <span className="chip bg-lago text-creme">Escolha seu naipe</span>
+          <h2 className="font-display mt-4 max-w-4xl text-4xl text-lago sm:text-5xl lg:text-6xl">Quatro caminhos para entrar na batida.</h2>
+          <p className="mt-4 max-w-3xl text-lg text-tinta/75">Experimente os timbres, descubra o que combina com você e aprenda como cada instrumento conversa com o conjunto.</p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2">
+            {INSTRUMENTS.map((instrument, index) => (
+              <article key={instrument.name} className={`${instrument.tone} relative overflow-hidden rounded-[2rem] p-7 sm:p-9`}>
+                <Spiral className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 opacity-15" stroke={8} />
+                <div className="relative flex items-center justify-between gap-3">
+                  <span className="text-xs font-black uppercase tracking-[0.16em] opacity-65">Naipe 0{index + 1}</span>
+                  <span className="rounded-full bg-creme/15 px-3 py-1 text-xs font-bold">Aulas práticas</span>
                 </div>
-              ))}
-              <div className="rounded-[2rem] bg-white p-6 ring-1 ring-tinta/5 sm:col-span-3">
-                <h3 className="font-display text-2xl text-lago">Como pagar</h3>
-                <ul className="mt-3 grid gap-3 text-tinta/85 sm:grid-cols-3">
-                  <li className="rounded-2xl bg-areia p-4"><strong>Pix</strong><br />Forma mais rápida. Envie o comprovante pelo WhatsApp.</li>
-                  <li className="rounded-2xl bg-areia p-4"><strong>Transferência</strong><br />TED/DOC com os mesmos dados do Pix.</li>
-                  <li className="rounded-2xl bg-areia p-4"><strong>Presencial</strong><br />Dinheiro ou cartão na aula, combinando com a coordenação.</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="relative overflow-hidden rounded-[2rem] bg-tinta p-7 text-creme">
-              <Spiral className="absolute -right-12 -top-12 h-48 w-48 text-lago-700" stroke={8} />
-              <p className="relative text-sm font-bold uppercase tracking-widest text-sol">Pagamento por Pix</p>
-              <p className="font-display relative mt-3 break-all text-2xl sm:text-3xl">{OFICINA.pixKey}</p>
-              <p className="relative mt-2 text-creme/80">Favorecido: {OFICINA.pixHolder}</p>
-              <div className="relative mt-6 flex flex-wrap gap-3">
-                <CopyButton text={OFICINA.pixKey} />
-                <a className="btn btn-creme" href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent("Olá! Fiz o pagamento da Oficina BSP, segue o comprovante.")}`} target="_blank" rel="noreferrer">
-                  Enviar comprovante
-                </a>
-              </div>
-              <p className="relative mt-5 text-sm text-creme/70">Identifique o Pix com seu nome completo e “Oficina BSP”.</p>
-            </div>
+                <h3 className="font-display relative mt-5 text-4xl sm:text-5xl">{instrument.name}</h3>
+                <p className="relative mt-2 text-lg font-extrabold">{instrument.phrase}</p>
+                <p className="relative mt-3 max-w-lg leading-relaxed opacity-85">{instrument.detail}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <a href="#inscricao" className="btn btn-sol">Quero experimentar um naipe <span aria-hidden="true">→</span></a>
           </div>
         </div>
       </section>
 
-      {/* Inscrição */}
-      <section className="section-pad scroll-mt-24 pb-24" id="inscricao">
-        <div className="container-bsp grid gap-10 rounded-[2.5rem] bg-sol p-6 text-tinta sm:p-12 lg:grid-cols-[0.8fr_1.2fr]">
-          <div className="text-creme">
-            <span className="chip bg-creme text-sol-600">Vagas abertas o ano todo</span>
-            <h2 className="font-display mt-4 text-5xl sm:text-6xl">Bora tocar?</h2>
-            <p className="mt-4 text-lg">
-              Deixe seus dados e a coordenação chama você no WhatsApp. Já é integrante do bloco?{" "}
-              <Link href="/entrar" className="font-bold underline">Entre na sua conta</Link>.
-            </p>
+      {/* Informações práticas */}
+      <section className="section-pad py-16 sm:py-24" id="informacoes">
+        <div className="container-bsp">
+          <span className="chip bg-sol-100 text-sol-600">Organize sua chegada</span>
+          <h2 className="font-display mt-4 text-4xl text-lago sm:text-5xl">Informações práticas</h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <article className="rounded-[1.75rem] bg-lago p-6 text-creme">
+              <p className="text-xs font-black uppercase tracking-widest text-sol">Dias e horários</p>
+              <h3 className="font-display mt-3 text-2xl">Turmas da oficina</h3>
+              <p className="mt-2 leading-relaxed text-creme/85">{OFICINA.schedule}.</p>
+            </article>
+            <article className="rounded-[1.75rem] bg-areia p-6 text-tinta ring-1 ring-tinta/10">
+              <p className="text-xs font-black uppercase tracking-widest text-sol-600">Local</p>
+              <h3 className="font-display mt-3 text-2xl">Sede em Brasília</h3>
+              <p className="mt-2 leading-relaxed text-tinta/75">A coordenação confirma endereço, turma e orientações de chegada após a pré-inscrição.</p>
+            </article>
+            <article className="rounded-[1.75rem] bg-sol p-6 text-creme">
+              <p className="text-xs font-black uppercase tracking-widest text-creme/80">Valor e planos</p>
+              <h3 className="font-display mt-3 text-2xl">Mensalidade</h3>
+              <p className="mt-2 leading-relaxed text-creme/90">Consulte os valores e as opções de plano com a coordenação. Os números disponíveis no cadastro interno ainda são ilustrativos, não uma tabela oficial.</p>
+            </article>
           </div>
-          <div className="rounded-[2rem] bg-creme p-6 sm:p-8">
+          <p className="mt-5 rounded-2xl border border-sol/20 bg-sol/10 p-4 text-sm font-semibold text-tinta/80">
+            Dias, horários, endereço exato e investimento da próxima turma precisam ser confirmados com a equipe antes da matrícula.
+          </p>
+        </div>
+      </section>
+
+      {/* Perguntas frequentes */}
+      <section className="section-pad bg-areia/70 py-16 sm:py-24" id="faq">
+        <div className="container-bsp grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <span className="chip bg-lago text-creme">Dúvidas comuns</span>
+            <h2 className="font-display mt-4 text-4xl text-lago sm:text-5xl">Antes de entrar na roda.</h2>
+            <p className="mt-4 max-w-md text-tinta/75">A ideia é que você chegue para aprender, não para se preocupar com o que ainda não sabe.</p>
+            <Link href="/contato" className="mt-5 inline-flex font-extrabold text-sol-600 underline underline-offset-4">Ainda tem dúvida? Fale com a gente.</Link>
+          </div>
+          <div className="space-y-3">
+            {FAQ.map((item) => (
+              <details key={item.question} className="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-tinta/10">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-extrabold text-lago marker:hidden">
+                  <span>{item.question}</span>
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-sol text-creme transition group-open:rotate-45" aria-hidden="true">+</span>
+                </summary>
+                <p className="mt-4 max-w-2xl leading-relaxed text-tinta/75">{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Formulário de pré-inscrição */}
+      <section className="section-pad scroll-mt-24 pb-20 sm:pb-28" id="inscricao">
+        <div className="container-bsp grid gap-8 overflow-hidden rounded-[2.5rem] bg-sol p-6 text-tinta sm:p-10 lg:grid-cols-[0.8fr_1.2fr] lg:p-12">
+          <div className="relative text-creme">
+            <LogoMark className="pointer-events-none absolute -bottom-12 -left-12 h-64 w-64 text-creme/15" />
+            <span className="chip bg-creme text-sol-600">Próxima etapa: sua primeira batida</span>
+            <h2 className="font-display relative mt-4 text-5xl sm:text-6xl">Bora fazer Brasília tremer?</h2>
+            <p className="relative mt-4 max-w-md text-lg text-creme/90">Deixe seus dados e a coordenação entra em contato para apresentar as turmas, combinar uma aula experimental e explicar os próximos passos.</p>
+          </div>
+          <div className="rounded-[2rem] bg-creme p-5 sm:p-8">
+            <h3 className="font-display text-3xl text-lago">Garanta seu contato para a próxima turma</h3>
+            <p className="mt-2 mb-6 text-sm text-tinta/65">A pré-inscrição não exige experiência nem instrumento próprio.</p>
             <OficinaForm />
           </div>
         </div>

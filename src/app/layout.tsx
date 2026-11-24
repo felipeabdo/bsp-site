@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Suspense } from "react";
 import "./globals.css";
 import HeaderSlot from "@/components/HeaderSlot";
-import Footer from "@/components/Footer";
+import FooterSlot from "@/components/FooterSlot";
 
 export const metadata: Metadata = {
   title: {
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Suspense fallback={<HeaderSkeleton />}><HeaderSlot /></Suspense>
         <main>{children}</main>
-        <Footer />
+        <Suspense fallback={null}><FooterSlot /></Suspense>
       </body>
     </html>
   );

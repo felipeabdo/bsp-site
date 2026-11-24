@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Cadastro de integrante" };
 export const dynamic = "force-dynamic";
 
 export default async function CadastroPage() {
-  if (await getCurrentUser()) redirect("/configuracoes");
+  if (await getCurrentUser()) redirect("/area-integrante");
   return (
     <AuthShell wide title="Cadastro de integrante" subtitle="Em 4 passos rápidos você ganha seu ID (ano-ordem), sua carteirinha e seu espaço na página de integrantes.">
       <RegisterForm />

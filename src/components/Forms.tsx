@@ -103,7 +103,7 @@ export function OficinaForm() {
   );
 }
 
-export function ContactForm() {
+export function ContactForm({ defaultSubject = "" }: { defaultSubject?: string }) {
   const { state, error, submit } = useSubmit("/api/contact");
   return (
     <form onSubmit={submit} className="grid gap-4 sm:grid-cols-2">
@@ -117,7 +117,7 @@ export function ContactForm() {
       </div>
       <div className="sm:col-span-2">
         <label className="field-label" htmlFor="c-subject">Assunto</label>
-        <select id="c-subject" name="subject" required className="input" defaultValue="">
+        <select id="c-subject" name="subject" required className="input" defaultValue={defaultSubject}>
           <option value="" disabled>Selecione</option>
           <option>Contratar o bloco para evento</option>
           <option>Imprensa e parcerias</option>

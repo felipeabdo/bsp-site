@@ -7,7 +7,6 @@ export const ARTIST_LOGOS: { name: string; src: string }[] = [
   { name: "Harmonia do Samba", src: "/brand/artists/03_harmonia_do_samba.png" },
   { name: "Araketu", src: "/brand/artists/04_are_keto.png" },
   { name: "Banda Eva", src: "/brand/artists/05_eva.png" },
-  { name: "DM", src: "/brand/artists/06_dm.png" },
   { name: "Molejo", src: "/brand/artists/07_molejo.png" },
   { name: "Saulo", src: "/brand/artists/08_saulo.png" },
 ];

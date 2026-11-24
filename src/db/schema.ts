@@ -70,6 +70,8 @@ export const events = pgTable("events", {
   free: boolean("free").notNull().default(true),
   confirmed: boolean("confirmed").notNull().default(true),
   isDemo: boolean("is_demo").notNull().default(false),
+  concentrationAt: text("concentration_at"),
+  dressCode: text("dress_code"),
 });
 
 export const contactMessages = pgTable("contact_messages", {
@@ -124,5 +126,29 @@ export const musicAssignments = pgTable("music_assignments", {
   composition: jsonb("composition").$type<Record<string, unknown>>(),
   description: text("description"),
   assignedBy: text("assigned_by").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+
+export const eventRsvps = pgTable(
+  "event_rsvps",
+  {
+    id: serial("id").primaryKey(),
+    eventId: integer("event_id").notNull().references(() => events.id, { onDelete: "cascade" }),
+    memberId: text("member_id").notNull().references(() => users.memberId, { onDelete: "cascade" }),
+    status: text("status").notNull(), // going | unavailable
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("event_rsvps_event_member_idx").on(t.eventId, t.memberId)],
+);
+
+export const announcements = pgTable("announcements", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  author: text("author").notNull().default("Diretoria"),
+  pinned: boolean("pinned").notNull().default(false),
+  published: boolean("published").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

@@ -231,6 +231,18 @@ export async function upcomingEvents(limit = 6) {
   return db.select().from(events).where(gte(events.startsAt, since)).orderBy(asc(events.startsAt)).limit(limit);
 }
 
+
+export async function publishedUpcomingEvents(limit = 12) {
+  await ensureSeed();
+  const since = new Date(Date.now() - 12 * 3600_000);
+  return db
+    .select()
+    .from(events)
+    .where(and(gte(events.startsAt, since), eq(events.confirmed, true), eq(events.isDemo, false)))
+    .orderBy(asc(events.startsAt))
+    .limit(limit);
+}
+
 export async function pastEvents(limit = 6) {
   await ensureSeed();
   const since = new Date(Date.now() - 12 * 3600_000);

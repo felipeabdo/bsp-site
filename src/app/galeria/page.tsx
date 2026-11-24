@@ -5,13 +5,13 @@ import { EventList, MiniCalendar, PastEventList } from "@/components/Calendar";
 import Img from "@/components/Img";
 import { GALLERY_FALLBACK_NOTE, SITE } from "@/lib/site";
 import { VIDEOS } from "@/lib/gallery";
-import { pastEvents, upcomingEvents } from "@/lib/members";
+import { pastEvents, publishedUpcomingEvents } from "@/lib/members";
 
 export const metadata: Metadata = { title: "Galeria · Fotos, vídeos e agenda" };
 export const dynamic = "force-dynamic";
 
 export default async function GaleriaPage() {
-  const [next, past] = await Promise.all([upcomingEvents(10), pastEvents(8)]);
+  const [next, past] = await Promise.all([publishedUpcomingEvents(10), pastEvents(8)]);
   return (
     <>
       <PageHero
@@ -76,9 +76,7 @@ export default async function GaleriaPage() {
           </div>
           <div>
             <EventList events={next} />
-            <p className="mt-6 text-sm text-tinta/60">
-              Itens marcados como “A confirmar” são datas de exemplo e serão atualizadas com a agenda oficial.
-            </p>
+            <p className="mt-6 text-sm text-tinta/60">A agenda reúne somente compromissos confirmados e publicados pela equipe do bloco.</p>
           </div>
         </div>
       </section>
