@@ -186,7 +186,7 @@ function Spotlight({ m, onClose, onStep, many }: { m: PublicMember; onClose: () 
                   member={m}
                   kind="body"
                   fit="contain"
-                  className="absolute -left-[7%] -top-[21%] h-[118%] w-[118%] animate-pop object-contain object-bottom drop-shadow-[0_18px_22px_rgba(0,0,0,0.24)]"
+                  className="absolute -left-[5%] -top-[21%] h-[118%] w-[118%] animate-pop object-contain object-bottom drop-shadow-[0_18px_22px_rgba(0,0,0,0.24)]"
                 />
               </div>
             ) : (
