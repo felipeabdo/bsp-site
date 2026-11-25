@@ -109,7 +109,7 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
                       <Spiral className="absolute -right-8 -top-8 h-36 w-36 opacity-25 transition duration-700 group-hover:rotate-90" stroke={8} />
                     </div>
                     {isCutout ? (
-                      <div className="pointer-events-none absolute -inset-x-[6%] top-[-18%] bottom-0 z-20 flex items-end justify-center overflow-visible">
+                      <div className="pointer-events-none absolute -inset-x-[6%] top-[-20%] bottom-5 z-20 flex items-end justify-center overflow-visible">
                         {/* Sombra de contato no chão, atrás dos pés do integrante. */}
                         <div
                           aria-hidden="true"
