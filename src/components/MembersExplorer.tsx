@@ -80,7 +80,7 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
             aria-selected={tab === t.key}
             onClick={() => setTab(t.key)}
             className={`shrink-0 rounded-full px-5 py-3 text-base font-semibold transition ${
-              tab === t.key ? "bg-lago text-creme shadow-[0_5px_0_var(--color-lago-700)]" : "bg-white text-tinta ring-1 ring-tinta/10 hover:bg-sol-100"
+              tab === t.key ? "bg-lago mb-20 text-creme shadow-[0_5px_0_var(--color-lago-700)]" : "bg-white text-tinta ring-1 ring-tinta/10 hover:bg-sol-100"
             }`}
           >
             {t.label} <span className="ml-1 opacity-70">{groups[t.key].length}</span>
