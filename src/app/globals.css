@@ -43,7 +43,6 @@
   font-display: swap;
 }
 
-
 @theme {
   --color-sol: #F9834E;
   --color-sol-600: #F9834E;
@@ -905,6 +904,10 @@ textarea.input {
     order: -1;
     width: min(69%, 315px);
     margin: 0 auto 0.35rem;
+    /* Keep the above-the-fold photo visible immediately on mobile.
+       The desktop entrance animation starts at opacity: 0, which can
+       prevent Lighthouse mobile from recording a valid LCP candidate. */
+    animation: none;
   }
   .home-hero__performers {
     left: -8.25%;
