@@ -93,7 +93,7 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
           <p className="text-lg font-medium">{TABS.find((t) => t.key === tab)?.empty}</p>
         </div>
       ) : (
-        <ul className="mt-106 grid grid-cols-2 gap-x-4 gap-y-20 sm:gap-x-6 sm:gap-y-24 md:grid-cols-3 lg:grid-cols-4">
+        <ul className="mt-30 grid grid-cols-2 gap-x-4 gap-y-20 sm:gap-x-6 sm:gap-y-24 md:grid-cols-3 lg:grid-cols-4">
           {list.map((m, i) => {
             const isCutout = m.hasBody && m.bodyPhotoType === "cutout";
             return (
