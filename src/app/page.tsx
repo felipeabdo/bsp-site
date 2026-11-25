@@ -1,13 +1,13 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { preload } from "react-dom";
 import { redirect } from "next/navigation";
 import { LogoMark, Spiral, SpiralBackdrop } from "@/components/art";
 import HomeHeroImage, { HERO_AVIF_SRCSET, HERO_SIZES } from "@/components/HomeHeroImage";
 import ArtistsMarquee from "@/components/ArtistsMarquee";
 import { SeeAll } from "@/components/Calendar";
-import HomeCalendar from "@/components/HomeCalendar";
+import HomeAgenda, { HomeCalendarSkeleton } from "@/components/HomeAgenda";
 import { getCurrentUser } from "@/lib/auth";
-import { publishedUpcomingEvents } from "@/lib/members";
 
 export const dynamic = "force-dynamic";
 
@@ -38,17 +38,6 @@ export default async function Home() {
   if (user) redirect("/area-integrante");
 
   const today = saoPauloToday();
-  const upcoming = await publishedUpcomingEvents(12);
-  const calendarEvents = upcoming.map((event) => ({
-    id: event.id,
-    title: event.title,
-    startsAt: event.startsAt.toISOString(),
-    timeLabel: event.timeLabel,
-    location: event.location,
-    description: event.description,
-    kind: event.kind,
-    free: event.free,
-  }));
 
   return (
     <>
@@ -122,7 +111,9 @@ export default async function Home() {
             <SeeAll href="/galeria#agenda">Agenda completa</SeeAll>
           </div>
           <div className="home-events-agenda mt-9">
-            <HomeCalendar today={today} events={calendarEvents} />
+            <Suspense fallback={<HomeCalendarSkeleton />}>
+              <HomeAgenda today={today} />
+            </Suspense>
           </div>
           <div className="mt-5 flex flex-wrap gap-2 text-xs font-extrabold">
             <span className="rounded-full bg-lago px-3 py-1.5 text-creme">Cortejo gratuito</span>
