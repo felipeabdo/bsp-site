@@ -26,8 +26,8 @@ const CUTOUT_SHADOW = {
   groundHeight: "5.5%",
   groundBlur: 7,
   groundBottom: "1.1%",
-  groundCore: "rgba(12, 38, 52, 0.42)",
-  groundMid: "rgba(12, 38, 52, 0.22)",
+  groundCore: "rgba(12, 38, 52, 0.22)",
+  groundMid: "rgba(12, 38, 52, 0.12)",
   figure: "drop-shadow(0 14px 12px rgba(10, 35, 48, 0.24))",
 } as const;
 
