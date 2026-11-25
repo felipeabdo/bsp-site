@@ -108,7 +108,7 @@ export function MemberImage({
   member,
   kind,
   className = "",
-  fit = "cover",
+  fit,
   silClass = "text-lago/70",
 }: {
   member: {
@@ -125,14 +125,15 @@ export function MemberImage({
   silClass?: string;
 }) {
   const has = kind === "body" ? member.hasBody : member.hasPortrait;
+  const resolvedFit = fit ?? (kind === "body" && member.bodyPhotoType === "cutout" ? "contain" : "cover");
   if (has) {
-    const pos = kind === "body" && member.bodyPhotoType === "half" ? "object-top" : "object-center";
+    const pos = kind === "body" && member.bodyPhotoType === "half" ? "object-top" : kind === "body" && member.bodyPhotoType === "cutout" ? "object-bottom" : "object-center";
     // eslint-disable-next-line @next/next/no-img-element
     return (
       <img
         src={`/api/photo/${member.memberId}/${kind}?v=${member.photoVersion}`}
         alt=""
-        className={`${className} ${fit === "cover" ? "object-cover" : "object-contain"} ${pos}`}
+        className={`${className} ${resolvedFit === "cover" ? "object-cover" : "object-contain"} ${pos}`}
         loading="lazy"
       />
     );

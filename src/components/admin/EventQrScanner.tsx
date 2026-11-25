@@ -279,7 +279,7 @@ export default function EventQrScanner({ initialEvents }: { initialEvents: Event
               <Detail label="Integrante desde">{member.joinYear}</Detail>
               <Detail label="Cadastro criado em">{dateTime(member.createdAt)}</Detail>
               <Detail label="Contato público">{member.showContact ? "WhatsApp autorizado no perfil público" : "Contato oculto no perfil público"}</Detail>
-              <Detail label="Foto de corpo inteiro">{member.hasBody ? `Enviada (${member.bodyPhotoType === "half" ? "meio corpo" : "corpo inteiro"})` : "Não enviada"}</Detail>
+              <Detail label="Foto de corpo inteiro">{member.hasBody ? `Enviada (${member.bodyPhotoType === "cutout" ? "recorte PNG" : member.bodyPhotoType === "half" ? "meio corpo" : "corpo inteiro"})` : "Não enviada"}</Detail>
               <Detail label="Foto 3×4">{member.hasPortrait ? "Enviada" : "Não enviada"}</Detail>
               <Detail label="Biografia / história" wide>{value(member.bio)}</Detail>
             </div>

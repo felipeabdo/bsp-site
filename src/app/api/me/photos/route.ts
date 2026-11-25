@@ -19,7 +19,7 @@ export async function POST(req: Request) {
   const set: Partial<typeof users.$inferInsert> = { photoVersion: sql`${users.photoVersion} + 1` as unknown as number };
   if (kind === "body") {
     set.photoBody = dataUrl;
-    set.bodyPhotoType = b.bodyPhotoType === "half" ? "half" : "full";
+    set.bodyPhotoType = b.bodyPhotoType === "cutout" ? "cutout" : b.bodyPhotoType === "half" ? "half" : "full";
   } else {
     set.photoPortrait = dataUrl;
   }

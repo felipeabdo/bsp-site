@@ -5,6 +5,7 @@ import { IDCardFront } from "@/components/IDCard";
 import { getMember } from "@/lib/members";
 import { displayName } from "@/lib/member-utils";
 import { getSiteOrigin } from "@/lib/site-origin";
+import { createMemberQrToken } from "@/lib/member-qr";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Verificar carteirinha" };
@@ -13,7 +14,7 @@ export default async function VerificarPage({ params }: { params: Promise<{ memb
   const { memberId } = await params;
   const m = await getMember(decodeURIComponent(memberId));
   if (!m) notFound();
-  const qrValue = `${await getSiteOrigin()}/verificar/${encodeURIComponent(m.memberId)}`;
+  const qrValue = `${await getSiteOrigin()}/q/${createMemberQrToken(m.id, m.memberId)}`;
   return (
     <section className="section-pad py-16 sm:py-24">
       <div className="container-bsp mx-auto max-w-2xl text-center">
@@ -22,8 +23,8 @@ export default async function VerificarPage({ params }: { params: Promise<{ memb
         <p className="mt-3 text-lg text-tinta/80">
           O ID <strong>{m.memberId}</strong> pertence a {displayName(m)}, integrante do Bloco Santo Pecado.
         </p>
-        <div className="mx-auto mt-10 max-w-md">
-          <IDCardFront m={m} qrValue={qrValue} qrLabel="Verificação online" />
+        <div className="mx-auto mt-10 w-full max-w-lg">
+          <IDCardFront m={m} qrValue={qrValue} />
         </div>
         <p className="mt-6 text-sm text-tinta/60">Por segurança, esta página exibe apenas dados públicos.</p>
         <Link href="/integrantes" className="btn btn-sol mt-8">Ver todos os integrantes</Link>

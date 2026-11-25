@@ -77,31 +77,47 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
           <p className="text-lg font-medium">{TABS.find((t) => t.key === tab)?.empty}</p>
         </div>
       ) : (
-        <ul className="mt-10 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-          {list.map((m, i) => (
-            <li key={m.memberId}>
-              <button
-                onClick={() => setOpenId(m.memberId)}
-                className="group block w-full text-left"
-                aria-label={`Ver destaque de ${displayName(m)}`}
-              >
-                <div className={`relative aspect-[3/4] overflow-hidden rounded-[1.75rem] transition duration-300 group-hover:-translate-y-2 group-hover:rotate-[-1.5deg] ${TONES[i % 3]}`}>
-                  <Spiral className="absolute -right-8 -top-8 h-36 w-36 opacity-25 transition duration-700 group-hover:rotate-90" stroke={8} />
-                  <div className="absolute inset-x-0 bottom-0 flex h-[88%] items-end justify-center">
-                    <MemberImage member={m} kind="body" className="h-full w-full" silClass={i % 3 === 2 ? "text-lago/70" : "text-creme/85"} />
+        <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-6 sm:gap-y-14 md:grid-cols-3 lg:grid-cols-4">
+          {list.map((m, i) => {
+            const isCutout = m.hasBody && m.bodyPhotoType === "cutout";
+            return (
+              <li key={m.memberId} className="relative isolate">
+                <button
+                  onClick={() => setOpenId(m.memberId)}
+                  className="group block w-full text-left"
+                  aria-label={`Ver destaque de ${displayName(m)}`}
+                >
+                  <div className="relative aspect-[3/4] overflow-visible transition duration-300 group-hover:-translate-y-2 group-hover:rotate-[-1.5deg]">
+                    <div className={`absolute inset-0 overflow-hidden rounded-[1.75rem] ${TONES[i % 3]}`}>
+                      <Spiral className="absolute -right-8 -top-8 h-36 w-36 opacity-25 transition duration-700 group-hover:rotate-90" stroke={8} />
+                    </div>
+                    {isCutout ? (
+                      <div className="pointer-events-none absolute -inset-x-[4%] -top-[10%] -bottom-[5%] z-10 flex items-end justify-center">
+                        <MemberImage
+                          member={m}
+                          kind="body"
+                          fit="contain"
+                          className="h-full w-full object-contain object-bottom drop-shadow-[0_12px_12px_rgba(23,79,104,0.18)]"
+                        />
+                      </div>
+                    ) : (
+                      <div className="absolute inset-x-0 bottom-0 z-10 flex h-[88%] items-end justify-center overflow-hidden rounded-b-[1.75rem]">
+                        <MemberImage member={m} kind="body" className="h-full w-full" silClass={i % 3 === 2 ? "text-lago/70" : "text-creme/85"} />
+                      </div>
+                    )}
+                    <span className="absolute left-3 top-3 z-20 rounded-full bg-creme px-3 py-1 text-xs font-bold text-tinta shadow-sm">{m.memberId}</span>
+                    {m.isDemo && (
+                      <span className="absolute bottom-3 left-3 z-20 rounded-full bg-tinta/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-creme">Exemplo</span>
+                    )}
                   </div>
-                  <span className="absolute left-3 top-3 rounded-full bg-creme px-3 py-1 text-xs font-bold text-tinta">{m.memberId}</span>
-                  {m.isDemo && (
-                    <span className="absolute bottom-3 left-3 rounded-full bg-tinta/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-creme">Exemplo</span>
-                  )}
-                </div>
-                <div className="mt-3 px-1">
-                  <h3 className="font-display text-xl leading-tight sm:text-2xl">{displayName(m)}</h3>
-                  <p className="text-sm font-semibold text-sol-600">{m.instrument ?? "Integrante"}</p>
-                </div>
-              </button>
-            </li>
-          ))}
+                  <div className="mt-6 px-1">
+                    <h3 className="font-display text-xl leading-tight sm:text-2xl">{displayName(m)}</h3>
+                    <p className="text-sm font-semibold text-sol-600">{m.instrument ?? "Integrante"}</p>
+                  </div>
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
 
@@ -112,6 +128,7 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
 
 function Spotlight({ m, onClose, onStep, many }: { m: PublicMember; onClose: () => void; onStep: (d: 1 | -1) => void; many: boolean }) {
   const half = m.hasBody && m.bodyPhotoType === "half";
+  const cutout = m.hasBody && m.bodyPhotoType === "cutout";
   const since = m.category === "ex" && m.leftYear ? `${m.joinYear} – ${m.leftYear}` : `desde ${m.joinYear}`;
   const label = (m.instrument ?? "Bloco Santo Pecado").toUpperCase();
   return (
@@ -133,16 +150,28 @@ function Spotlight({ m, onClose, onStep, many }: { m: PublicMember; onClose: () 
         <div className="grid flex-1 items-center gap-8 py-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
           <div className="relative mx-auto w-full max-w-sm">
             <div className="absolute left-1/2 top-[22%] aspect-square w-[118%] -translate-x-1/2 rounded-full bg-sol" />
-            <div
-              className={`relative animate-pop overflow-hidden rounded-t-[999px] rounded-b-[2rem] border-8 border-creme bg-areia text-lago shadow-[0_40px_80px_-30px_rgba(0,0,0,0.6)] ${
-                half ? "aspect-[4/5]" : "aspect-[3/5] max-h-[72vh]"
-              } mx-auto`}
-            >
-              <div className={`flex h-full w-full items-end justify-center ${m.hasBody ? "" : "px-6 pt-10"}`}>
-                <MemberImage member={m} kind="body" className="h-full w-full" />
+            {cutout ? (
+              <div className="relative mx-auto aspect-[4/5] w-full overflow-visible">
+                <div className="absolute inset-0 overflow-hidden rounded-t-[999px] rounded-b-[2rem] border-8 border-creme bg-areia shadow-[0_40px_80px_-30px_rgba(0,0,0,0.6)]" />
+                <MemberImage
+                  member={m}
+                  kind="body"
+                  fit="contain"
+                  className="absolute -left-[9%] -top-[10%] h-[118%] w-[118%] animate-pop object-contain object-bottom drop-shadow-[0_18px_22px_rgba(0,0,0,0.24)]"
+                />
               </div>
-            </div>
-            <span className="absolute -right-3 top-24 rotate-6 animate-pop rounded-2xl bg-sol px-4 py-2 font-display text-lg uppercase text-creme shadow-xl [animation-delay:0.25s]">
+            ) : (
+              <div
+                className={`relative mx-auto animate-pop overflow-hidden rounded-t-[999px] rounded-b-[2rem] border-8 border-creme bg-areia text-lago shadow-[0_40px_80px_-30px_rgba(0,0,0,0.6)] ${
+                  half ? "aspect-[4/5]" : "aspect-[3/5] max-h-[72vh]"
+                }`}
+              >
+                <div className={`flex h-full w-full items-end justify-center ${m.hasBody ? "" : "px-6 pt-10"}`}>
+                  <MemberImage member={m} kind="body" className="h-full w-full" />
+                </div>
+              </div>
+            )}
+            <span className="absolute -right-3 top-24 z-20 rotate-6 animate-pop rounded-2xl bg-sol px-4 py-2 font-display text-lg uppercase text-creme shadow-xl [animation-delay:0.25s]">
               {m.instrument ?? "Integrante"}
             </span>
           </div>

@@ -200,7 +200,7 @@ export default function MemberDashboard({
             <p className="text-xs font-black uppercase tracking-widest text-creme/75">Sua carteirinha digital</p>
             <span className="rounded-full bg-sol px-3 py-1 text-xs font-extrabold text-creme">{currentStatus}</span>
           </div>
-          <IDCardFront m={user} qrValue={memberQrValue} />
+          <div className="mx-auto w-full max-w-lg"><IDCardFront m={user} qrValue={memberQrValue} /></div>
           <dl className="mt-4 grid grid-cols-2 gap-3 px-1 text-sm">
             <div><dt className="text-creme/60">Nome completo</dt><dd className="font-extrabold">{fullName(user)}</dd></div>
             <div><dt className="text-creme/60">ID único</dt><dd className="font-display text-xl">{user.memberId}</dd></div>

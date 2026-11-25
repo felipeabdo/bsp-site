@@ -172,8 +172,8 @@ function loadImage(file: File): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
     const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("Não foi possível ler essa imagem."));
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Não foi possível ler essa imagem.")); };
     img.src = url;
   });
 }
@@ -190,6 +190,38 @@ function resizeBody(img: HTMLImageElement, png: boolean) {
     scale *= 0.8;
   }
   throw new Error("Imagem grande demais. Tente uma foto menor.");
+}
+
+/** Redimensiona sem preencher o fundo, preservando o canal alfa do PNG. */
+function resizeTransparentBody(img: HTMLImageElement) {
+  let scale = Math.min(1, 1000 / img.naturalWidth, 1600 / img.naturalHeight);
+  for (let i = 0; i < 8; i++) {
+    const c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(img.naturalWidth * scale));
+    c.height = Math.max(1, Math.round(img.naturalHeight * scale));
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    if (!ctx) throw new Error("Não foi possível preparar a imagem neste navegador.");
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+
+    const pixels = ctx.getImageData(0, 0, c.width, c.height).data;
+    const stepX = Math.max(1, Math.floor(c.width / 64));
+    const stepY = Math.max(1, Math.floor(c.height / 64));
+    let hasTransparency = false;
+    for (let y = 3; y < c.height && !hasTransparency; y += stepY) {
+      for (let x = 3; x < c.width; x += stepX) {
+        if (pixels[(y * c.width + x) * 4 + 3] < 245) { hasTransparency = true; break; }
+      }
+    }
+    if (!hasTransparency) {
+      throw new Error("Este PNG parece ter fundo opaco. Envie um PNG exportado com transparência real.");
+    }
+
+    const url = c.toDataURL("image/png");
+    if (url.length < 2_000_000) return url;
+    scale *= 0.82;
+  }
+  throw new Error("O PNG ainda ficou grande demais. Exporte uma versão com resolução menor.");
 }
 
 function Photos({ user }: { user: U }) {
@@ -244,8 +276,11 @@ function Photos({ user }: { user: U }) {
   async function pickBody(f?: File) {
     if (!f) return;
     try {
+      if (bodyType === "cutout" && f.type !== "image/png") {
+        throw new Error("Para o modo Recorte PNG, escolha uma imagem PNG com fundo transparente.");
+      }
       const i = await loadImage(f);
-      setBodyData(resizeBody(i, f.type === "image/png"));
+      setBodyData(bodyType === "cutout" ? resizeTransparentBody(i) : resizeBody(i, f.type === "image/png"));
       setMsg({ ok: true, text: "" });
     } catch (e) {
       setMsg({ ok: false, text: (e as Error).message });
@@ -264,6 +299,7 @@ function Photos({ user }: { user: U }) {
   }
 
   const half = bodyType === "half";
+  const cutout = bodyType === "cutout";
 
   return (
     <div className="space-y-8">
@@ -272,31 +308,36 @@ function Photos({ user }: { user: U }) {
         {/* Corpo inteiro */}
         <div className="rounded-[2rem] bg-white p-6 ring-1 ring-tinta/5">
           <h3 className="font-display text-3xl text-lago">Foto de corpo inteiro</h3>
-          <p className="mt-1 text-tinta/70">Aparece em destaque na página de integrantes. De preferência tocando seu instrumento. Pode ser de meio corpo.</p>
-          <div className="mt-5 flex gap-3">
-            {[["full", "Corpo inteiro"], ["half", "Meio corpo"]].map(([k, l]) => (
-              <button key={k} type="button" onClick={() => setBodyType(k)} aria-pressed={bodyType === k}
-                className={`flex-1 rounded-2xl border-2 px-3 py-2 font-semibold ${bodyType === k ? "border-sol bg-sol-100 text-sol-600" : "border-tinta/10"}`}>{l}</button>
+          <p className="mt-1 text-tinta/70">Aparece em destaque na página de integrantes. Para o efeito de pessoa saindo do arco, envie um PNG com fundo transparente e a pessoa tocando seu instrumento.</p>
+          <div className="mt-5 grid grid-cols-3 gap-2">
+            {[["full", "Corpo inteiro"], ["half", "Meio corpo"], ["cutout", "Recorte PNG"]].map(([k, l]) => (
+              <button key={k} type="button" onClick={() => { setBodyType(k); setBodyData(null); }} aria-pressed={bodyType === k}
+                className={`rounded-2xl border-2 px-2 py-2 text-sm font-semibold ${bodyType === k ? "border-sol bg-sol-100 text-sol-600" : "border-tinta/10"}`}>{l}</button>
             ))}
           </div>
+          {cutout && <p className="mt-3 rounded-2xl bg-areia p-3 text-sm text-tinta/75">O site aceita o recorte transparente, mas ainda não remove o fundo automaticamente. Envie um PNG com transparência real (não uma imagem JPG salva como PNG). O arquivo é validado antes de ser salvo.</p>}
           <div className="mt-5 flex justify-center rounded-3xl bg-lago p-5">
-            <div className={`relative w-48 overflow-hidden rounded-t-[999px] rounded-b-3xl border-[6px] border-creme bg-areia text-lago ${half ? "aspect-[4/5]" : "aspect-[3/5]"}`}>
+            <div className={`relative w-48 rounded-t-[999px] rounded-b-3xl border-[6px] border-creme bg-areia text-lago ${cutout ? "aspect-[3/5] overflow-visible" : `overflow-hidden ${half ? "aspect-[4/5]" : "aspect-[3/5]"}`}`}>
               {bodyData ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={bodyData} alt="Pré-visualização" className={`h-full w-full object-cover ${half ? "object-top" : "object-center"}`} />
+                <img
+                  src={bodyData}
+                  alt="Pré-visualização"
+                  className={cutout ? "absolute -left-[12%] -top-[9%] h-[116%] w-[124%] object-contain object-bottom drop-shadow-xl" : `relative h-full w-full object-cover ${half ? "object-top" : "object-center"}`}
+                />
               ) : (
-                <div className="flex h-full w-full items-end justify-center px-3 pt-8">
-                  <MemberImage member={{ ...user, bodyPhotoType: bodyType }} kind="body" className="h-full w-full" />
+                <div className={`flex h-full w-full items-end justify-center px-3 pt-8 ${cutout ? "absolute -inset-x-[8%] -top-[4%]" : ""}`}>
+                  <MemberImage member={user} kind="body" fit={user.bodyPhotoType === "cutout" ? "contain" : "cover"} className="h-full w-full" />
                 </div>
               )}
             </div>
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
             <label className="btn btn-lago cursor-pointer">
-              Escolher foto
-              <input type="file" accept="image/*" className="sr-only" onChange={(e) => pickBody(e.target.files?.[0])} />
+              {cutout ? "Escolher PNG transparente" : "Escolher foto"}
+              <input type="file" accept={cutout ? "image/png" : "image/*"} className="sr-only" onChange={(e) => { const file = e.target.files?.[0]; e.currentTarget.value = ""; void pickBody(file); }} />
             </label>
-            {bodyData && <button className="btn btn-sol" disabled={busy === "body"} onClick={() => post("body", bodyData)}>{busy === "body" ? "Salvando…" : "Salvar foto"}</button>}
+            {bodyData && <button className="btn btn-sol" disabled={busy === "body"} onClick={() => post("body", bodyData)}>{busy === "body" ? "Salvando…" : cutout ? "Salvar recorte" : "Salvar foto"}</button>}
             {!bodyData && user.hasBody && (
               <button className="btn btn-ghost !text-sol-600" disabled={busy === "body"} onClick={() => remove("body")}>Remover</button>
             )}

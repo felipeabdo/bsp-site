@@ -264,11 +264,6 @@ export default function HistoriaPage() {
               </figure>
             ))}
           </div>
-          <p className="mt-6 max-w-3xl text-sm text-creme/90">
-            Dossiê em construção: envie fotos, vídeos e relatos da viagem pela{" "}
-            <Link href="/contato" className="font-bold underline">página de contato</Link> ou direto no Instagram do bloco e dos
-            integrantes, e eles entram aqui.
-          </p>
         </div>
       </section>
 
