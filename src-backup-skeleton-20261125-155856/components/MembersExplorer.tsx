@@ -89,7 +89,7 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
       </div>
 
       {list.length === 0 ? (
-        <div className="mt-10 rounded-[2rem] bg-areia p-10 text-center">
+        <div className="mt-30 rounded-[2rem] bg-areia p-10 text-center">
           <p className="text-lg font-medium">{TABS.find((t) => t.key === tab)?.empty}</p>
         </div>
       ) : (

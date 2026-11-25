@@ -11,6 +11,7 @@ const TABS = [
   { key: "fundador", label: "Fundadores", empty: "Os fundadores ainda vão aparecer por aqui." },
   { key: "atual", label: "Formação atual", empty: "Nenhum integrante da formação atual está disponível para exibição neste filtro." },
   { key: "ex", label: "Já passaram pelo bloco", empty: "Ainda não há ex-integrantes disponíveis para exibição neste filtro." },
+  { key: "parceiro", label: "Parceiros de palco", empty: "Ainda não há parceiros de palco cadastrados para exibição neste filtro." },
 ] as const;
 
 const TONES = ["bg-sol text-creme", "bg-lago text-creme"];
@@ -40,6 +41,7 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
       fundador: members.filter((m) => m.category === "fundador"),
       atual: members.filter((m) => m.category === "atual"),
       ex: members.filter((m) => m.category === "ex"),
+      parceiro: members.filter((m) => m.category === "parceiro"),
     }),
     [members],
   );
@@ -93,7 +95,7 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
           <p className="text-lg font-medium">{TABS.find((t) => t.key === tab)?.empty}</p>
         </div>
       ) : (
-        <ul className="mt-30 grid grid-cols-2 gap-x-4 gap-y-20 sm:gap-x-6 sm:gap-y-24 md:grid-cols-3 lg:grid-cols-4">
+        <ul className="mt-20 grid grid-cols-2 gap-x-4 gap-y-20 sm:gap-x-6 sm:gap-y-24 md:grid-cols-3 lg:grid-cols-4">
           {list.map((m, i) => {
             const isCutout = m.hasBody && m.bodyPhotoType === "cutout";
             return (
@@ -109,7 +111,7 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
                       <Spiral className="absolute -right-8 -top-8 h-36 w-36 opacity-25 transition duration-700 group-hover:rotate-90" stroke={8} />
                     </div>
                     {isCutout ? (
-                      <div className="pointer-events-none absolute -inset-x-[6%] top-[-20%] bottom-5 z-20 flex items-end justify-center overflow-visible">
+                      <div className="pointer-events-none absolute -inset-x-[6%] top-[-18%] bottom-0 z-20 flex items-end justify-center overflow-visible">
                         {/* Sombra de contato no chão, atrás dos pés do integrante. */}
                         <div
                           aria-hidden="true"
@@ -186,7 +188,7 @@ function Spotlight({ m, onClose, onStep, many }: { m: PublicMember; onClose: () 
                   member={m}
                   kind="body"
                   fit="contain"
-                  className="absolute -left-[-5%] -top-[21%] h-[118%] w-[118%] animate-pop object-contain object-bottom drop-shadow-[0_18px_22px_rgba(0,0,0,0.24)]"
+                  className="absolute -left-[9%] -top-[10%] h-[118%] w-[118%] animate-pop object-contain object-bottom drop-shadow-[0_18px_22px_rgba(0,0,0,0.24)]"
                 />
               </div>
             ) : (
@@ -240,4 +242,11 @@ function Spotlight({ m, onClose, onStep, many }: { m: PublicMember; onClose: () 
   );
 }
 
-const labelCat = (c: string) => (c === "fundador" ? "Fundador" : c === "ex" ? "Já passou pelo bloco" : "Formação atual");
+const labelCat = (c: string) =>
+  c === "fundador"
+    ? "Fundador"
+    : c === "ex"
+      ? "Já passou pelo bloco"
+      : c === "parceiro"
+        ? "Parceiro de palco"
+        : "Formação atual";
