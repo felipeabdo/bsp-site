@@ -23,9 +23,9 @@ function saoPauloToday() {
 }
 
 export default async function Home() {
-  // Registra a dica de preload antes de qualquer operação assíncrona.
-  // Assim o navegador pode descobrir a imagem principal sem esperar pela
-  // consulta de sessão do visitante. O srcset e sizes são os mesmos do <picture>.
+  // Antecipa o preload antes da consulta de sessão. O navegador recebe
+  // a mesma lista AVIF e os mesmos sizes usados pelo <picture>, escolhendo
+  // a variante ideal sem baixar uma segunda resolução.
   preload("/brand/photos/home-hero-complete-480.avif", {
     as: "image",
     fetchPriority: "high",
