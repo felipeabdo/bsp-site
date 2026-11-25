@@ -102,8 +102,8 @@ export default function Header({ user }: { user: HeaderUser }) {
           scrolled ? "border-[#0E2E3E] bg-creme/92 shadow-[0_6px_30px_-12px_rgba(14,46,62,0.28)] backdrop-blur-md" : "bg-creme"
         }`}
       >
-        <div className="container-bsp flex h-[4.5rem] items-center justify-between gap-4 px-5 sm:h-20 sm:px-8">
-          <Link href="/" className="group flex shrink-0 items-center gap-3" aria-label={`${SITE.name} — início`}>
+        <div className="container-bsp flex min-w-0 h-[4.5rem] items-center justify-between gap-2 px-3 sm:h-20 sm:gap-4 sm:px-8">
+          <Link href="/" className="group flex shrink-0 items-center gap-2 sm:gap-3" aria-label={`${SITE.name} — início`}>
             <LogoMark className="h-11 w-11 text-sol transition-transform duration-300 group-hover:scale-105" />
             <Wordmark className="h-12 w-[78px] text-lago sm:h-14 sm:w-[92px]" />
           </Link>
@@ -127,19 +127,19 @@ export default function Header({ user }: { user: HeaderUser }) {
             ))}
           </nav>
 
-          <div className="flex shrink-0 items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             {user ? (
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setMenu((v) => !v)}
-                  className="flex items-center gap-2 rounded-full border-[2.5px] border-[#0E2E3E] bg-white py-1 pl-1 pr-3 font-extrabold shadow-[3px_3px_0_#0E2E3E] transition hover:-translate-y-0.5"
+                  className="header-user-trigger rounded-full border-[2.5px] border-[#0E2E3E] bg-white font-extrabold shadow-[3px_3px_0_#0E2E3E] transition hover:-translate-y-0.5"
                   aria-haspopup="menu"
                   aria-expanded={menu}
                 >
-                  <span className="relative h-9 w-9 overflow-hidden rounded-full border-2 border-[#0E2E3E] bg-lago-100">
-                    <MemberImage member={user} kind="portrait" className="h-full w-full" />
+                  <span className="header-user-avatar relative overflow-hidden rounded-full border-2 border-[#0E2E3E] bg-lago-100">
+                    <MemberImage member={user} kind="portrait" className="block h-full w-full object-cover object-center" />
                   </span>
-                  <span className="hidden text-sm sm:block">{name}</span>
+                  <span className="header-user-name hidden text-sm min-[768px]:block">{name}</span>
                 </button>
                 {menu && (
                   <div

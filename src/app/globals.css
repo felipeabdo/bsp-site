@@ -1576,7 +1576,44 @@ textarea.input {
   header nav[aria-label="Principal"] {
     display: none !important;
   }
+  /* .header-entry-btn is defined after Tailwind utilities, so hide it here
+     explicitly; otherwise the desktop CTA makes the mobile header overflow. */
+  .header-entry-btn {
+    display: none !important;
+  }
   .header-burger {
     display: inline-flex !important;
+  }
+}
+
+/* Avatar do integrante: círculo realmente centralizado em telas pequenas.
+   O nome só volta a aparecer quando há espaço horizontal suficiente. */
+.header-user-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+}
+.header-user-avatar {
+  display: block;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: none;
+}
+@media (max-width: 767px) {
+  .header-user-trigger {
+    width: 3.75rem;
+    height: 3.75rem;
+    justify-content: center;
+    gap: 0;
+    padding: 0.125rem;
+  }
+  .header-user-avatar {
+    width: 3.125rem;
+    height: 3.125rem;
+  }
+  .header-user-name {
+    display: none !important;
   }
 }
