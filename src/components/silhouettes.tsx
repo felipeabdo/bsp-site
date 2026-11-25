@@ -133,7 +133,7 @@ export function MemberImage({
       <Img
         src={`/api/photo/${member.memberId}/${kind}?v=${member.photoVersion}`}
         alt=""
-        frameClassName="relative block h-full w-full overflow-visible"
+        frameClassName="bsp-member-image-frame relative block h-full w-full overflow-visible"
         className={`${className} ${resolvedFit === "cover" ? "object-cover" : "object-contain"} ${pos}`}
       />
     );
