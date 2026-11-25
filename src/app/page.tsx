@@ -4,7 +4,6 @@ import { LogoMark, Spiral, SpiralBackdrop } from "@/components/art";
 import ArtistsMarquee from "@/components/ArtistsMarquee";
 import { SeeAll } from "@/components/Calendar";
 import HomeCalendar from "@/components/HomeCalendar";
-import Img from "@/components/Img";
 import { getCurrentUser } from "@/lib/auth";
 import { publishedUpcomingEvents } from "@/lib/members";
 
@@ -73,12 +72,7 @@ export default async function Home() {
             </div>
 
             <div className="home-hero__media home-hero__media--complete">
-              <Img
-                src="/brand/photos/home-hero-complete.png"
-                alt="Integrantes do Bloco Santo Pecado reunidos em fotografia de grupo"
-                className="home-hero__complete"
-                priority
-              />
+              <HomeHeroImage />
               <div className="home-hero__seal" aria-hidden="true">
                 <svg className="home-hero__badge" viewBox="0 0 140 140">
                   <circle className="home-hero__badge-disc" cx="70" cy="70" r="66" />

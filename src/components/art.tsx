@@ -165,7 +165,13 @@ export function Marquee({ text = "Eu curto bloco de rua!", className = "" }: { t
         {items.concat(items).map((_, i) => (
           <span key={i} className="flex items-center gap-8">
             {text === "Eu curto bloco de rua!" ? (
-              <Img src={`${VECTORS}/motto-eu-curto-light.svg`} alt="" className="h-12 w-auto sm:h-14" />
+              <Img
+                src={`${VECTORS}/motto-eu-curto-light.min.svg`}
+                alt=""
+                width={108}
+                height={91}
+                className="h-12 w-auto sm:h-14"
+              />
             ) : (
               <span className="font-display text-3xl uppercase sm:text-4xl">{text}</span>
             )}

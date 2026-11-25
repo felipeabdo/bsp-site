@@ -7,12 +7,16 @@ export default function Img({
   className = "",
   style,
   priority = false,
+  width,
+  height,
 }: {
   src: string;
   alt: string;
   className?: string;
   style?: CSSProperties;
   priority?: boolean;
+  width?: number;
+  height?: number;
 }) {
   return (
     <img
@@ -20,6 +24,8 @@ export default function Img({
       alt={alt}
       className={className}
       style={style}
+      width={width}
+      height={height}
       loading={priority ? "eager" : "lazy"}
       decoding="async"
     />
