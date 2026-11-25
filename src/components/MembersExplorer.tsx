@@ -13,7 +13,23 @@ const TABS = [
   { key: "ex", label: "Já passaram pelo bloco", empty: "Ainda não há ex-integrantes disponíveis para exibição neste filtro." },
 ] as const;
 
-const TONES = ["bg-sol text-creme", "bg-lago text-creme", "bg-areia text-tinta"];
+const TONES = ["bg-sol text-creme", "bg-lago text-creme"];
+
+// AJUSTE DA SOMBRA DOS RECORTES — altere estes valores para regular a profundidade.
+// groundWidth / groundHeight: tamanho da sombra no chão.
+// groundBlur: maciez da sombra em pixels.
+// groundBottom: distância dos pés até a base visual do card.
+// groundCore / groundMid: cor e intensidade (alpha) da sombra de contato.
+// figure: sombra projetada no contorno da pessoa (x, y, desfoque, cor).
+const CUTOUT_SHADOW = {
+  groundWidth: "68%",
+  groundHeight: "5.5%",
+  groundBlur: 7,
+  groundBottom: "1.1%",
+  groundCore: "rgba(12, 38, 52, 0.42)",
+  groundMid: "rgba(12, 38, 52, 0.22)",
+  figure: "drop-shadow(0 14px 12px rgba(10, 35, 48, 0.24))",
+} as const;
 
 export default function MembersExplorer({ members }: { members: PublicMember[] }) {
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("fundador");
@@ -89,7 +105,7 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
                 >
                   <div className="relative isolate aspect-[3/4] w-full overflow-visible transform-gpu transition duration-300 group-hover:-translate-y-2 group-hover:rotate-[-1.5deg]">
                     {/* O fundo mantém o recorte, a cor e a espiral animada originais. */}
-                    <div className={`absolute inset-0 z-0 overflow-hidden rounded-[1.75rem] ${TONES[i % 3]}`}>
+                    <div className={`absolute inset-0 z-0 overflow-hidden rounded-[1.75rem] ${TONES[i % TONES.length]}`}>
                       <Spiral className="absolute -right-8 -top-8 h-36 w-36 opacity-25 transition duration-700 group-hover:rotate-90" stroke={8} />
                     </div>
                     {isCutout ? (
@@ -97,14 +113,21 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
                         {/* Sombra de contato no chão, atrás dos pés do integrante. */}
                         <div
                           aria-hidden="true"
-                          className="absolute bottom-[1.1%] left-1/2 z-0 h-[5.5%] w-[68%] -translate-x-1/2 rounded-[50%] blur-[7px]"
-                          style={{ background: "radial-gradient(ellipse at center, rgba(12, 38, 52, 0.42) 0%, rgba(12, 38, 52, 0.22) 46%, rgba(12, 38, 52, 0) 78%)" }}
+                          className="absolute left-1/2 z-0 -translate-x-1/2 rounded-[50%]"
+                          style={{
+                            bottom: CUTOUT_SHADOW.groundBottom,
+                            width: CUTOUT_SHADOW.groundWidth,
+                            height: CUTOUT_SHADOW.groundHeight,
+                            filter: `blur(${CUTOUT_SHADOW.groundBlur}px)`,
+                            background: `radial-gradient(ellipse at center, ${CUTOUT_SHADOW.groundCore} 0%, ${CUTOUT_SHADOW.groundMid} 46%, rgba(12, 38, 52, 0) 78%)`,
+                          }}
                         />
                         <MemberImage
                           member={m}
                           kind="body"
                           fit="contain"
-                          className="relative z-10 block h-full w-full object-contain object-bottom drop-shadow-[0_14px_12px_rgba(10,35,48,0.24)]"
+                          className="relative z-10 block h-full w-full object-contain object-bottom"
+                          style={{ filter: CUTOUT_SHADOW.figure }}
                         />
                       </div>
                     ) : (
