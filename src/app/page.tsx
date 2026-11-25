@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LogoMark, Spiral, SpiralBackdrop } from "@/components/art";
+import HomeHeroImage from "@/components/HomeHeroImage";
 import ArtistsMarquee from "@/components/ArtistsMarquee";
 import { SeeAll } from "@/components/Calendar";
 import HomeCalendar from "@/components/HomeCalendar";
