@@ -22,10 +22,22 @@ function saoPauloToday() {
   return `${value("year")}-${value("month")}-${value("day")}`;
 }
 
-export default async function Home() {
-  // Antecipa o preload antes da consulta de sessão. O navegador recebe
-  // a mesma lista AVIF e os mesmos sizes usados pelo <picture>, escolhendo
-  // a variante ideal sem baixar uma segunda resolução.
+/**
+ * Keep the session lookup independent from the public Home shell.
+ * The redirect is still enforced for authenticated visitors, but its database
+ * lookup no longer prevents the hero/LCP element from being streamed first.
+ * Since the Home is public, streaming its shell before this check completes
+ * does not expose private member data.
+ */
+async function RedirectAuthenticatedVisitors() {
+  const user = await getCurrentUser();
+  if (user) redirect("/area-integrante");
+  return null;
+}
+
+export default function Home() {
+  // Antecipa o preload no início da renderização. A verificação de sessão
+  // ocorre em paralelo, dentro de Suspense, sem segurar o HTML da Hero.
   preload("/brand/photos/home-hero-complete-480.avif", {
     as: "image",
     fetchPriority: "high",
@@ -34,13 +46,13 @@ export default async function Home() {
     type: "image/avif",
   });
 
-  const user = await getCurrentUser();
-  if (user) redirect("/area-integrante");
-
   const today = saoPauloToday();
 
   return (
     <>
+      <Suspense fallback={null}>
+        <RedirectAuthenticatedVisitors />
+      </Suspense>
       {/* 01 · HERO: identidade do bloco e dois caminhos objetivos. */}
       <section className="home-hero relative isolate w-full overflow-hidden bg-lago text-creme">
         <SpiralBackdrop className="pointer-events-none absolute -right-[15%] top-[4%] z-0 aspect-[1.21] w-[min(66vw,58rem)] text-creme/10" />
