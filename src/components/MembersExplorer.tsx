@@ -26,9 +26,9 @@ const CUTOUT_SHADOW = {
   groundHeight: "5.5%",
   groundBlur: 7,
   groundBottom: "1.1%",
-  groundCore: "rgba(12, 38, 52, 0.22)",
-  groundMid: "rgba(12, 38, 52, 0.12)",
-  figure: "drop-shadow(0 14px 12px rgba(10, 35, 48, 0.24))",
+  groundCore: "rgba(12, 38, 52, 0.42)",
+  groundMid: "rgba(12, 38, 52, 0.22)",
+  figure: "drop-shadow-[0_14px_12px_rgba(10,35,48,0.24)]",
 } as const;
 
 export default function MembersExplorer({ members }: { members: PublicMember[] }) {
@@ -126,8 +126,7 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
                           member={m}
                           kind="body"
                           fit="contain"
-                          className="relative z-10 block h-full w-full object-contain object-bottom"
-                          style={{ filter: CUTOUT_SHADOW.figure }}
+                          className={`relative z-10 block h-full w-full object-contain object-bottom ${CUTOUT_SHADOW.figure}`}
                         />
                       </div>
                     ) : (
