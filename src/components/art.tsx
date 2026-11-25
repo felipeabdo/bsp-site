@@ -126,6 +126,8 @@ export function BrandMotto({ className = "", light = false }: { className?: stri
     <Img
       src={`${VECTORS}/motto-eu-curto${light ? "-light" : ""}.svg`}
       alt="Eu curto bloco de rua!"
+      width={108}
+      height={91}
       className={className}
     />
   );

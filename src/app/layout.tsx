@@ -38,6 +38,22 @@ function HeaderSkeleton() {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR">
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/bagel-fat-one-latin-400-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/nunito-latin-600-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
         <Suspense fallback={<HeaderSkeleton />}><HeaderSlot /></Suspense>
         <main>{children}</main>

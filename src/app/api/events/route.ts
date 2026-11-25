@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { db } from "@/db";
 import { events } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
@@ -48,5 +49,6 @@ export async function POST(request: Request) {
     dressCode: clean(payload.dressCode, 180) || null,
   }).returning({ id: events.id });
 
+  revalidateTag("published-upcoming-events", { expire: 0 });
   return NextResponse.json({ ok: true, eventId: created.id }, { status: 201 });
 }

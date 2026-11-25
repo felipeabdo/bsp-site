@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { and, asc, count, desc, eq, gte, lt, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { events, users } from "@/db/schema";
@@ -232,15 +233,56 @@ export async function upcomingEvents(limit = 6) {
 }
 
 
+type CachedPublishedEvent = {
+  id: number;
+  title: string;
+  startsAt: string;
+  timeLabel: string | null;
+  location: string | null;
+  description: string | null;
+  kind: string;
+  free: boolean;
+  confirmed: boolean;
+  isDemo: boolean;
+  concentrationAt: string | null;
+  dressCode: string | null;
+};
+
+const readPublishedUpcomingEvents = unstable_cache(
+  async (limit: number): Promise<CachedPublishedEvent[]> => {
+    // Seed and query only when this shared public cache is refreshed, not on
+    // every homepage request. The result contains no member-specific data.
+    await ensureSeed();
+    const since = new Date(Date.now() - 12 * 3600_000);
+    const rows = await db
+      .select({
+        id: events.id,
+        title: events.title,
+        startsAt: events.startsAt,
+        timeLabel: events.timeLabel,
+        location: events.location,
+        description: events.description,
+        kind: events.kind,
+        free: events.free,
+        confirmed: events.confirmed,
+        isDemo: events.isDemo,
+        concentrationAt: events.concentrationAt,
+        dressCode: events.dressCode,
+      })
+      .from(events)
+      .where(and(gte(events.startsAt, since), eq(events.confirmed, true), eq(events.isDemo, false)))
+      .orderBy(asc(events.startsAt))
+      .limit(limit);
+
+    return rows.map((event) => ({ ...event, startsAt: event.startsAt.toISOString() }));
+  },
+  ["published-upcoming-events-v2"],
+  { revalidate: 60, tags: ["published-upcoming-events"] },
+);
+
 export async function publishedUpcomingEvents(limit = 12) {
-  await ensureSeed();
-  const since = new Date(Date.now() - 12 * 3600_000);
-  return db
-    .select()
-    .from(events)
-    .where(and(gte(events.startsAt, since), eq(events.confirmed, true), eq(events.isDemo, false)))
-    .orderBy(asc(events.startsAt))
-    .limit(limit);
+  const cached = await readPublishedUpcomingEvents(limit);
+  return cached.map((event) => ({ ...event, startsAt: new Date(event.startsAt) }));
 }
 
 export async function pastEvents(limit = 6) {

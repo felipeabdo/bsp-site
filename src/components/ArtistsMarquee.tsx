@@ -43,7 +43,8 @@ export default function ArtistsMarquee() {
                       alt={copy === 0 ? artist.name : ""}
                       fill
                       className="object-contain"
-                      sizes="(max-width: 520px) 132px, (max-width: 639px) 142px, 164px"
+                      quality={70}
+                      sizes="(max-width: 520px) 100px, (max-width: 639px) 110px, 124px"
                     />
                   </div>
                 </div>
