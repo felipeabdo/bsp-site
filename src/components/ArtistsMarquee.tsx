@@ -1,14 +1,15 @@
 import Image from "next/image";
 
 /** Logos originais fornecidas para a faixa de artistas da home. */
-export const ARTIST_LOGOS: { name: string; src: string }[] = [
-  { name: "Tomate", src: "/brand/artists/01_tomate.png" },
-  { name: "É o Tchan", src: "/brand/artists/02_eo_tchao.png" },
-  { name: "Harmonia do Samba", src: "/brand/artists/03_harmonia_do_samba.png" },
-  { name: "Araketu", src: "/brand/artists/04_are_keto.png" },
-  { name: "Banda Eva", src: "/brand/artists/05_eva.png" },
-  { name: "Molejo", src: "/brand/artists/07_molejo.png" },
-  { name: "Saulo", src: "/brand/artists/08_saulo.png" },
+export const ARTIST_LOGOS: { name: string; src: string; sizes: string }[] = [
+  { name: "Tomate", src: "/brand/artists/01_tomate.png", sizes: "(max-width: 639px) 100px, 124px" },
+  { name: "É o Tchan", src: "/brand/artists/02_eo_tchao.png", sizes: "(max-width: 639px) 100px, 124px" },
+  { name: "Harmonia do Samba", src: "/brand/artists/03_harmonia_do_samba.png", sizes: "(max-width: 639px) 100px, 124px" },
+  // Estes dois logos são mais altos; object-contain reduz a largura real dentro do card.
+  { name: "Araketu", src: "/brand/artists/04_are_keto.png", sizes: "(max-width: 639px) 76px, 98px" },
+  { name: "Banda Eva", src: "/brand/artists/05_eva.png", sizes: "(max-width: 639px) 85px, 110px" },
+  { name: "Molejo", src: "/brand/artists/07_molejo.png", sizes: "(max-width: 639px) 100px, 124px" },
+  { name: "Saulo", src: "/brand/artists/08_saulo.png", sizes: "(max-width: 639px) 100px, 124px" },
 ];
 
 export default function ArtistsMarquee() {
@@ -44,7 +45,7 @@ export default function ArtistsMarquee() {
                       fill
                       className="object-contain"
                       quality={70}
-                      sizes="(max-width: 520px) 100px, (max-width: 639px) 110px, 124px"
+                      sizes={artist.sizes}
                     />
                   </div>
                 </div>

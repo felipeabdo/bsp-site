@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { preload } from "react-dom";
 import { redirect } from "next/navigation";
 import { LogoMark, Spiral, SpiralBackdrop } from "@/components/art";
-import HomeHeroImage from "@/components/HomeHeroImage";
+import HomeHeroImage, { HERO_AVIF_SRCSET, HERO_SIZES } from "@/components/HomeHeroImage";
 import ArtistsMarquee from "@/components/ArtistsMarquee";
 import { SeeAll } from "@/components/Calendar";
 import HomeCalendar from "@/components/HomeCalendar";
@@ -24,6 +25,16 @@ function saoPauloToday() {
 export default async function Home() {
   const user = await getCurrentUser();
   if (user) redirect("/area-integrante");
+
+  // A dica de preload usa exatamente o mesmo srcset e sizes do <picture>,
+  // evitando uma segunda transferência em outra resolução.
+  preload("/brand/photos/home-hero-complete-480.avif", {
+    as: "image",
+    fetchPriority: "high",
+    imageSrcSet: HERO_AVIF_SRCSET,
+    imageSizes: HERO_SIZES,
+    type: "image/avif",
+  });
 
   const today = saoPauloToday();
   const upcoming = await publishedUpcomingEvents(12);

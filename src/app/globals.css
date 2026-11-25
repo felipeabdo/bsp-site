@@ -904,9 +904,7 @@ textarea.input {
     order: -1;
     width: min(69%, 315px);
     margin: 0 auto 0.35rem;
-    /* Keep the above-the-fold photo visible immediately on mobile.
-       The desktop entrance animation starts at opacity: 0, which can
-       prevent Lighthouse mobile from recording a valid LCP candidate. */
+    /* Keep the above-the-fold photo visible immediately on mobile. */
     animation: none;
   }
   .home-hero__performers {

@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 
-const HERO_SIZES = "(max-width: 520px) min(285px, calc(72vw - 1.66rem)), (max-width: 900px) 315px, 455px";
+export const HERO_SIZES = "(max-width: 520px) min(285px, calc(72vw - 1.66rem)), (max-width: 900px) 315px, 455px";
 
-const HERO_AVIF_SRCSET = [
+export const HERO_AVIF_SRCSET = [
   "/brand/photos/home-hero-complete-320.avif 320w",
   "/brand/photos/home-hero-complete-400.avif 400w",
   "/brand/photos/home-hero-complete-480.avif 480w",
