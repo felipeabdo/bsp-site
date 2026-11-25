@@ -23,11 +23,9 @@ function saoPauloToday() {
 }
 
 export default async function Home() {
-  const user = await getCurrentUser();
-  if (user) redirect("/area-integrante");
-
-  // A dica de preload usa exatamente o mesmo srcset e sizes do <picture>,
-  // evitando uma segunda transferência em outra resolução.
+  // Registra a dica de preload antes de qualquer operação assíncrona.
+  // Assim o navegador pode descobrir a imagem principal sem esperar pela
+  // consulta de sessão do visitante. O srcset e sizes são os mesmos do <picture>.
   preload("/brand/photos/home-hero-complete-480.avif", {
     as: "image",
     fetchPriority: "high",
@@ -35,6 +33,9 @@ export default async function Home() {
     imageSizes: HERO_SIZES,
     type: "image/avif",
   });
+
+  const user = await getCurrentUser();
+  if (user) redirect("/area-integrante");
 
   const today = saoPauloToday();
   const upcoming = await publishedUpcomingEvents(12);
