@@ -1,5 +1,7 @@
 "use client";
 
+import Img from "@/components/Img";
+
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
@@ -245,7 +247,14 @@ export default function EventQrScanner({ initialEvents }: { initialEvents: Event
         <section className="overflow-hidden rounded-3xl border border-lago/20 bg-white shadow-lg">
           <div className="flex flex-wrap items-center justify-between gap-3 bg-lago px-5 py-4 text-creme sm:px-7">
             <div className="flex min-w-0 items-center gap-4">
-              {member.hasPortrait && <img src={`/api/photo/${encodeURIComponent(member.memberId)}/portrait?v=${member.photoVersion}`} alt={`Foto de ${fullName(member)}`} className="h-16 w-16 shrink-0 rounded-xl border-2 border-creme/70 object-cover" />}
+              {member.hasPortrait && (
+                <Img
+                  src={`/api/photo/${encodeURIComponent(member.memberId)}/portrait?v=${member.photoVersion}`}
+                  alt={`Foto de ${fullName(member)}`}
+                  frameClassName="relative block h-16 w-16 shrink-0 overflow-hidden rounded-xl"
+                  className="h-full w-full rounded-xl border-2 border-creme/70 object-cover"
+                />
+              )}
               <div className="min-w-0">
                 <p className="text-xs font-bold uppercase tracking-widest text-creme/65">{result.event.title}</p>
                 <h3 className="mt-1 font-display text-2xl uppercase">{fullName(member)}</h3>

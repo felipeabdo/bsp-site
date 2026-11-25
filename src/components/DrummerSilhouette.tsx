@@ -13,6 +13,7 @@ export default function DrummerSilhouette({
     <Img
       src={female ? "/brand/member-silhouettes/drummer-female.png" : "/brand/member-silhouettes/drummer-male.png"}
       alt={`Ilustração de corpo inteiro de ${female ? "uma mulher" : "um homem"} tocando surdo elevado`}
+      frameClassName="relative block h-full w-full overflow-visible"
       className={`${className} h-full w-full object-contain`}
     />
   );

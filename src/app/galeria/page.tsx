@@ -49,7 +49,7 @@ export default async function GaleriaPage() {
             {VIDEOS.map((v) => (
               <a key={v.title} href={SITE.instagramUrl} target="_blank" rel="noreferrer" className="group block overflow-hidden rounded-[2rem] bg-creme text-tinta">
                 <div className="relative aspect-video overflow-hidden">
-                  <Img src={v.poster} alt={v.title} className="h-full w-full object-cover transition duration-700 group-hover:scale-110" />
+                  <Img src={v.poster} alt={v.title} frameClassName="relative block h-full w-full overflow-hidden" className="h-full w-full object-cover transition duration-700 group-hover:scale-110" />
                   <span className="absolute inset-0 grid place-items-center bg-tinta/30">
                     <span className="grid h-16 w-16 place-items-center rounded-full bg-sol pl-1 text-2xl text-creme shadow-xl transition group-hover:scale-110 animate-pulse-ring">▶</span>
                   </span>

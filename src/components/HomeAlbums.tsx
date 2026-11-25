@@ -42,7 +42,7 @@ export default function HomeAlbums() {
               aria-label={`Abrir o álbum ${album.title}, com ${count} fotos`}
             >
               <span className="home-album-card__media">
-                <Img src={album.cover} alt={album.coverAlt} className="home-album-card__image" />
+                <Img src={album.cover} alt={album.coverAlt} frameClassName="relative block h-full w-full" className="home-album-card__image" />
                 <span className="home-album-card__eyebrow">Álbum · {album.album}</span>
                 <span className="home-album-card__open">
                   Ver álbum <span aria-hidden="true">↗</span>
@@ -96,7 +96,7 @@ export default function HomeAlbums() {
               <div className="home-album-modal__grid">
                 {photos.map((photo, index) => (
                   <figure className="home-album-modal__photo" key={`${photo.src}-${index}`}>
-                    <Img src={photo.src} alt={photo.alt} className="home-album-modal__image" />
+                    <Img src={photo.src} alt={photo.alt} frameClassName="relative block aspect-[4/3] w-full overflow-hidden rounded-2xl" className="home-album-modal__image h-full" />
                     <figcaption>{photo.title}</figcaption>
                   </figure>
                 ))}

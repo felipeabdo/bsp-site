@@ -284,7 +284,8 @@ export default function HistoriaPage() {
                       <Img
                         src={entry.photo}
                         alt={`Fotografia ilustrativa de carnaval ou cortejo — referência: ${entry.title}; não é um registro oficial do BSP.`}
-                        className="relative mt-3 aspect-[16/8] w-full rounded-xl object-cover"
+                        frameClassName="relative mt-3 block aspect-[16/8] w-full overflow-hidden rounded-xl"
+                        className="h-full w-full object-cover"
                       />
                     )}
                   </article>
@@ -348,7 +349,7 @@ export default function HistoriaPage() {
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
               {JAPAN_PHOTOS.map((photo, index) => (
                 <figure key={photo.label} className={`group relative overflow-hidden rounded-xl border-2 border-creme/90 bg-[#183D4E] shadow-[0_8px_22px_rgba(69,38,26,0.2)] ${index === 1 ? "sm:translate-y-2" : ""}`}>
-                  <Img src={photo.src} alt={photo.alt} className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <Img src={photo.src} alt={photo.alt} frameClassName="relative block aspect-[4/3] w-full overflow-hidden rounded-lg" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#102B39]/90 to-transparent px-2 pb-2 pt-7 text-[0.65rem] font-bold text-creme sm:text-xs">
                     {photo.label}
                   </figcaption>

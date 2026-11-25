@@ -1,3 +1,4 @@
+import Img from "@/components/Img";
 import { Spiral } from "@/components/art";
 
 /** Contorno de corpo inteiro genérico (masculino / feminino). */
@@ -128,13 +129,12 @@ export function MemberImage({
   const resolvedFit = fit ?? (kind === "body" && member.bodyPhotoType === "cutout" ? "contain" : "cover");
   if (has) {
     const pos = kind === "body" && member.bodyPhotoType === "half" ? "object-top" : kind === "body" && member.bodyPhotoType === "cutout" ? "object-bottom" : "object-center";
-    // eslint-disable-next-line @next/next/no-img-element
     return (
-      <img
+      <Img
         src={`/api/photo/${member.memberId}/${kind}?v=${member.photoVersion}`}
         alt=""
+        frameClassName="relative block h-full w-full overflow-visible"
         className={`${className} ${resolvedFit === "cover" ? "object-cover" : "object-contain"} ${pos}`}
-        loading="lazy"
       />
     );
   }

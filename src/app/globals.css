@@ -133,6 +133,124 @@ body {
   overflow-x: hidden;
 }
 
+/* Skeletons de carregamento: usados tanto no fallback de navegação quanto nas fotos. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(40, 121, 159, 0.12);
+  background-image: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0) 18%,
+    rgba(255, 255, 255, 0.46) 48%,
+    rgba(255, 255, 255, 0) 78%
+  );
+  background-size: 220% 100%;
+  animation: bsp-skeleton-shimmer 1.45s ease-in-out infinite;
+}
+
+@keyframes bsp-skeleton-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -120% 0; }
+}
+
+.bsp-image-frame {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  max-width: 100%;
+  vertical-align: middle;
+  isolation: isolate;
+}
+
+.bsp-image-frame__image,
+.bsp-image-frame__skeleton,
+.bsp-image-frame__fallback {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.bsp-image-frame__image {
+  z-index: 1;
+  display: block;
+  max-width: 100%;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.bsp-image-frame[data-image-state="loaded"] .bsp-image-frame__image {
+  opacity: 1;
+}
+
+.bsp-image-frame__skeleton {
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  min-height: 2rem;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.bsp-image-frame__fallback {
+  z-index: 3;
+  display: grid;
+  min-height: 3rem;
+  min-width: 5rem;
+  place-items: center;
+  border-radius: inherit;
+  background: rgba(40, 121, 159, 0.10);
+  padding: 0.75rem;
+  color: rgba(40, 121, 159, 0.72);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.home-hero-image-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1344 / 1821;
+  overflow: hidden;
+}
+
+.home-hero-image-frame__picture {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.home-hero-image-frame__skeleton,
+.home-hero-image-frame__fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.home-hero-image-frame__fallback {
+  background: rgba(249, 249, 234, 0.12);
+}
+
+.home-hero-image-frame[data-image-state="loading"] .home-hero__complete {
+  opacity: 0;
+}
+
+.home-hero-image-frame[data-image-state="loaded"] .home-hero__complete {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background-image: none;
+  }
+  .bsp-image-frame__image {
+    transition: none;
+  }
+}
+
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   font-weight: 400;
@@ -721,10 +839,11 @@ textarea.input {
 .home-hero__complete {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 12px 14px rgba(14, 46, 62, 0.18));
   pointer-events: none;
+  transition: opacity 180ms ease;
 }
 
 .home-hero__arch {

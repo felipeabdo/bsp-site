@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { PhotoPlaceholder } from "@/components/silhouettes";
+import Img from "@/components/Img";
 import { ALBUMS, GALLERY } from "@/lib/gallery";
 
 export default function GalleryClient() {
@@ -59,12 +60,11 @@ export default function GalleryClient() {
               onClick={() => setOpen(i)}
               className="group relative mb-4 block w-full break-inside-avoid overflow-hidden rounded-3xl bg-lago text-left"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Img
                 src={g.src}
                 alt={g.alt}
-                loading="lazy"
-                className={`w-full object-cover transition duration-700 group-hover:scale-105 ${g.ratio === "tall" ? "aspect-[3/4]" : "aspect-[4/3]"}`}
+                frameClassName={`relative block w-full overflow-hidden ${g.ratio === "tall" ? "aspect-[3/4]" : "aspect-[4/3]"}`}
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
               />
               <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-tinta/85 to-transparent p-4 pt-12 text-creme">
                 <span className="font-display text-xl leading-tight">{g.title}</span>
@@ -82,8 +82,12 @@ export default function GalleryClient() {
             <button onClick={() => setOpen(null)} className="grid h-11 w-11 place-items-center rounded-full bg-creme text-tinta" aria-label="Fechar">✕</button>
           </div>
           <div className="relative flex min-h-0 flex-1 items-center justify-center py-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={current.src} alt={current.alt} className="max-h-full max-w-full rounded-3xl object-contain" />
+            <Img
+              src={current.src}
+              alt={current.alt}
+              frameClassName="relative grid max-h-full max-w-full place-items-center"
+              className="max-h-full max-w-full rounded-3xl object-contain"
+            />
             <button onClick={() => setOpen((open! - 1 + items.length) % items.length)} className="absolute left-0 grid h-12 w-12 place-items-center rounded-full bg-sol text-2xl" aria-label="Anterior">‹</button>
             <button onClick={() => setOpen((open! + 1) % items.length)} className="absolute right-0 grid h-12 w-12 place-items-center rounded-full bg-sol text-2xl" aria-label="Próxima">›</button>
           </div>

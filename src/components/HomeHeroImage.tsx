@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+import HomeHeroImageClient from "@/components/HomeHeroImageClient";
 
 export const HERO_SIZES = "(max-width: 520px) min(285px, calc(72vw - 1.66rem)), (max-width: 900px) 315px, 455px";
 
@@ -31,21 +31,11 @@ const HERO_PNG_SRCSET = [
 
 export default function HomeHeroImage() {
   return (
-    <picture className="block w-full">
-      <source type="image/avif" srcSet={HERO_AVIF_SRCSET} sizes={HERO_SIZES} />
-      <source type="image/webp" srcSet={HERO_WEBP_SRCSET} sizes={HERO_SIZES} />
-      <img
-        src="/brand/photos/home-hero-complete-400.png"
-        srcSet={HERO_PNG_SRCSET}
-        sizes={HERO_SIZES}
-        alt="Integrantes do Bloco Santo Pecado reunidos em fotografia de grupo"
-        width={1344}
-        height={1821}
-        className="home-hero__complete"
-        loading="eager"
-        fetchPriority="high"
-        decoding="async"
-      />
-    </picture>
+    <HomeHeroImageClient
+      sizes={HERO_SIZES}
+      avifSrcSet={HERO_AVIF_SRCSET}
+      webpSrcSet={HERO_WEBP_SRCSET}
+      pngSrcSet={HERO_PNG_SRCSET}
+    />
   );
 }

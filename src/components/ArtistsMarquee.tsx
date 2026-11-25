@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ArtistLogoImage from "@/components/ArtistLogoImage";
 
 /** Logos originais fornecidas para a faixa de artistas da home. */
 export const ARTIST_LOGOS: { name: string; src: string; sizes: string }[] = [
@@ -38,16 +38,12 @@ export default function ArtistsMarquee() {
                   className="artists-logo-card relative flex h-[66px] w-[142px] shrink-0 items-center justify-center rounded-2xl border px-4 py-2 sm:h-[76px] sm:w-[164px] sm:px-5"
                   key={`${copy}-${artist.name}`}
                 >
-                  <div className="relative h-full w-full">
-                    <Image
-                      src={artist.src}
-                      alt={copy === 0 ? artist.name : ""}
-                      fill
-                      className="object-contain"
-                      quality={70}
-                      sizes={artist.sizes}
-                    />
-                  </div>
+                  <ArtistLogoImage
+                    src={artist.src}
+                    alt={copy === 0 ? artist.name : ""}
+                    sizes={artist.sizes}
+                    loading={copy === 0 ? "eager" : "lazy"}
+                  />
                 </div>
               ))}
             </div>
