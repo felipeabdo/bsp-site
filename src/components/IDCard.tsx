@@ -92,12 +92,12 @@ export function IDCardFront({ m }: { m: CardMember }) {
               <p className="mt-[1.5cqw] inline-block rounded-full bg-lago px-[2.4cqw] py-[0.8cqw] font-semibold" style={{ fontSize: "3cqw" }}>
                 {m.instrument ?? "Integrante"}
               </p>
-              <div className="mt-[2.4cqw] flex items-end justify-between">
-                <div>
-                  <p className="font-semibold uppercase opacity-80" style={{ fontSize: "2.3cqw", letterSpacing: "0.14em" }}>ID do integrante</p>
-                  <p className="font-display leading-none text-tinta" style={{ fontSize: "9.5cqw" }}>{m.memberId}</p>
+              <div className="mt-[2.4cqw] grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-end gap-[1.5cqw]">
+                <div className="min-w-0">
+                  <p className="font-semibold uppercase opacity-80" style={{ fontSize: "2.1cqw", letterSpacing: "0.14em" }}>ID do integrante</p>
+                  <p className="whitespace-nowrap font-display leading-none tracking-[-0.035em] text-tinta" style={{ fontSize: "5.8cqw" }}>{m.memberId}</p>
                 </div>
-                <p className="text-right font-semibold opacity-80" style={{ fontSize: "2.3cqw" }}>BSB · 2013</p>
+                <p className="pb-[0.3cqw] text-right font-semibold leading-tight opacity-80" style={{ fontSize: "2.1cqw" }}>BSB ·<br />2013</p>
               </div>
             </div>
           </div>
@@ -108,35 +108,43 @@ export function IDCardFront({ m }: { m: CardMember }) {
 }
 
 export function IDCardBack({ m, p }: { m: CardMember; p?: CardPrivate }) {
-  const rows: [string, string][] = [
-    ["Nascimento", fmtDate(p?.birthDate)],
-    ["Naturalidade", p?.birthPlace || "—"],
-    ["Tipo sanguíneo", p?.bloodType || "—"],
-    ["Camiseta", p?.shirtSize || "—"],
-    ["Emergência", [p?.emergencyName, p?.emergencyPhone].filter(Boolean).join(" · ") || "—"],
+  const rows: { label: string; value: string; wide?: boolean }[] = [
+    { label: "Nascimento", value: fmtDate(p?.birthDate) },
+    { label: "Naturalidade", value: p?.birthPlace || "—" },
+    { label: "Tipo sanguíneo", value: p?.bloodType || "—" },
+    { label: "Camiseta", value: p?.shirtSize || "—" },
+    { label: "Emergência", value: [p?.emergencyName, p?.emergencyPhone].filter(Boolean).join(" · ") || "—", wide: true },
   ];
+
   return (
     <div className="[container-type:inline-size] w-full">
       <div className="relative aspect-[1.586] w-full overflow-hidden rounded-[4cqw] bg-lago text-creme shadow-[0_20px_40px_-18px_rgba(40,121,159,0.6)]">
         <Spiral className="absolute -bottom-[18cqw] -left-[12cqw] h-[64cqw] w-[64cqw] text-sol/20" stroke={7} />
-        <div className="absolute inset-x-0 top-[5cqw] h-[8cqw] bg-tinta" />
         <div className="absolute inset-0 flex flex-col p-[5cqw]">
-          <div className="mt-[13cqw] grid flex-1 grid-cols-[1fr_30cqw] gap-[4cqw]">
-            <dl className="space-y-[1.6cqw] self-start">
-              {rows.map(([k, v]) => (
-                <div key={k}>
-                  <dt className="font-semibold uppercase opacity-75" style={{ fontSize: "2.1cqw", letterSpacing: "0.14em" }}>{k}</dt>
-                  <dd className="font-semibold leading-tight" style={{ fontSize: "3.3cqw" }}>{v}</dd>
-                </div>
-              ))}
-            </dl>
-            <div className="flex flex-col items-center justify-between rounded-[2cqw] bg-creme p-[2cqw] text-tinta">
-              <LogoMark className="h-[14cqw] w-[14cqw] text-sol" />
-              <p className="font-display text-center leading-none" style={{ fontSize: "6cqw" }}>{m.memberId}</p>
-              <p className="text-center font-semibold" style={{ fontSize: "1.9cqw" }}>Verifique em<br />/verificar/{m.memberId}</p>
+          <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_28cqw] items-start gap-[4cqw] pb-[4cqw]">
+            <div className="flex min-w-0 flex-col justify-start gap-[3cqw] pt-[1cqw]">
+              <p className="font-semibold uppercase text-creme/75" style={{ fontSize: "2.1cqw", letterSpacing: "0.16em" }}>
+                Dados do integrante
+              </p>
+              <dl className="grid grid-cols-2 gap-x-[3cqw] gap-y-[2.5cqw]">
+                {rows.map(({ label, value, wide }) => (
+                  <div key={label} className={wide ? "col-span-2 min-w-0" : "min-w-0"}>
+                    <dt className="font-semibold uppercase text-creme/75" style={{ fontSize: "2.05cqw", letterSpacing: "0.12em" }}>{label}</dt>
+                    <dd className="break-words font-semibold leading-tight text-creme" style={{ fontSize: "3.15cqw" }}>{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            <div className="flex h-[44cqw] flex-col items-center justify-between self-start rounded-[2cqw] bg-creme px-[2cqw] py-[2.3cqw] text-tinta">
+              <LogoMark className="h-[12cqw] w-[12cqw] shrink-0 text-sol" />
+              <p className="whitespace-nowrap font-display text-center leading-none tracking-[-0.04em] text-lago" style={{ fontSize: "4.5cqw" }}>{m.memberId}</p>
+              <p className="text-center font-semibold leading-tight text-lago" style={{ fontSize: "1.8cqw" }}>
+                Verifique em<br />/verificar/{m.memberId}
+              </p>
             </div>
           </div>
-          <p className="text-center font-medium opacity-80" style={{ fontSize: "2.2cqw" }}>
+          <p className="shrink-0 text-center font-medium leading-tight text-creme/80" style={{ fontSize: "1.8cqw" }}>
             Documento de identificação interna do Bloco Santo Pecado · Eu curto bloco de rua!
           </p>
         </div>

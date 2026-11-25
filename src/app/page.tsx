@@ -4,9 +4,7 @@ import { LogoMark, Spiral, SpiralBackdrop } from "@/components/art";
 import ArtistsMarquee from "@/components/ArtistsMarquee";
 import { SeeAll } from "@/components/Calendar";
 import HomeCalendar from "@/components/HomeCalendar";
-import HomeAlbums from "@/components/HomeAlbums";
 import Img from "@/components/Img";
-import Sampler from "@/components/Sampler";
 import { getCurrentUser } from "@/lib/auth";
 import { publishedUpcomingEvents } from "@/lib/members";
 
@@ -100,6 +98,9 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Faixa de prova social: retorna para logo abaixo da Hero. */}
+      <ArtistsMarquee />
+
       {/* 02 · AGENDA: primeiro conteúdo depois da apresentação. */}
       <section className="section-pad scroll-mt-24 bg-areia/70 py-16 sm:py-24" id="agenda">
         <div className="container-bsp">
@@ -124,42 +125,10 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 03 · OFICINA: prioridade de conversão e renda. */}
-      <section className="section-pad py-16 sm:py-24" id="oficina-bsp">
-        <div className="container-bsp">
-          <div className="relative isolate overflow-hidden rounded-[2.5rem] bg-lago p-7 text-creme sm:p-10 lg:p-14">
-            <Spiral className="pointer-events-none absolute -right-16 -top-16 -z-10 h-80 w-80 text-creme/10" stroke={8} />
-            <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-              <div>
-                <span className="chip bg-sol text-creme">Aprenda com quem faz a roda girar</span>
-                <h2 className="font-display mt-5 max-w-3xl text-4xl leading-[1.08] sm:text-5xl lg:text-6xl">
-                  Aprenda samba-reggae com o <span className="text-sol">Mestre Reinaldo Bráz</span>
-                </h2>
-                <p className="mt-5 max-w-2xl text-lg leading-relaxed text-creme/90">
-                  Não precisa ter experiência nem instrumento próprio para começar. Aprenda na prática, no seu ritmo, e descubra como cada naipe constrói a pressão da bateria.
-                </p>
-                <div className="mt-6 flex flex-wrap gap-2 text-sm font-extrabold">
-                  {(["Surdo", "Repinique", "Timbal", "Caixa"] as const).map((name) => (
-                    <span key={name} className="rounded-full border border-creme/30 bg-creme/10 px-4 py-2">{name}</span>
-                  ))}
-                </div>
-                <Link href="/oficina" className="btn btn-sol mt-8">Conhecer a Oficina BSP <span aria-hidden="true">→</span></Link>
-              </div>
-              <div className="relative mx-auto w-full max-w-sm">
-                <div className="absolute inset-4 rounded-t-[999px] rounded-b-[2rem] border-[16px] border-sol/80" />
-                <Img src="/brand/photos/portrait-stage.jpg" alt="Percussionista em apresentação do Bloco Santo Pecado" className="relative aspect-[4/5] w-full rounded-t-[999px] rounded-b-[2rem] border-[8px] border-creme object-cover shadow-2xl" />
-                <span className="absolute -bottom-3 -left-3 rotate-[-4deg] rounded-xl bg-sol px-4 py-2 font-display text-xl uppercase text-creme shadow-lg">Do zero à bateria</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 04 · PROVA SOCIAL E HISTÓRIA. */}
+      {/* 03 · PROVA SOCIAL E HISTÓRIA. */}
       <section className="relative overflow-hidden bg-creme py-16 sm:py-20" id="historia-resumida">
         <Spiral className="pointer-events-none absolute -left-40 top-16 h-[30rem] w-[30rem] text-sol/10" stroke={6} />
-        <ArtistsMarquee />
-        <div className="container-bsp relative mt-16">
+        <div className="container-bsp relative">
           <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
               <span className="chip bg-sol-100 text-sol-600">Nossa caminhada</span>
@@ -196,32 +165,69 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 05 · SONS E GALERIA: experiência antes dos álbuns. */}
-      <section className="section-pad bg-areia/70 py-16 sm:py-24" id="sons-inspiracoes">
+      {/* 04 · ATALHOS EDITORIAIS: as experiências completas ficam nas páginas internas. */}
+      <section className="section-pad bg-areia/70 py-12 sm:py-14" id="explore-bsp">
         <div className="container-bsp">
-          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <span className="chip bg-lago text-creme">Escute a batida</span>
-              <h2 className="font-display mt-4 text-5xl text-lago sm:text-6xl">Sons & Inspirações</h2>
-              <p className="mt-3 max-w-2xl text-lg text-tinta/75">Conheça os timbres e sinta como os naipes se encontram no samba-reggae.</p>
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-2xl">
+              <span className="chip bg-sol-100 text-sol-600">Mais para conhecer</span>
+              <h2 className="font-display mt-3 text-3xl text-lago sm:text-4xl">Entre no universo Santo Pecado</h2>
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-tinta/70 sm:text-base">
+                Aprenda com a bateria, descubra os sons que movem o bloco e veja o Santo Pecado na rua — cada experiência no seu espaço.
+              </p>
             </div>
-            <Link href="/inspiracoes" className="font-extrabold text-sol-600 underline underline-offset-4">Explorar sons e referências →</Link>
           </div>
-          <Sampler compact featuredVoices={["surdo", "repinique", "timbal", "caixa"]} />
 
-          <div className="mt-16 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <span className="chip bg-sol-100 text-sol-600">Momentos na rua</span>
-              <h2 className="font-display mt-4 text-4xl text-lago sm:text-5xl">Álbuns em destaque</h2>
-              <p className="mt-2 max-w-xl font-semibold text-tinta/70">Carnaval de rua, shows, cortejos e Oficina BSP — cada encontro tem sua história.</p>
-            </div>
-            <SeeAll href="/galeria">Ver galeria completa</SeeAll>
+          <div className="grid gap-3 md:grid-cols-3">
+            <Link
+              href="/oficina"
+              className="group flex min-h-[148px] flex-col rounded-2xl border border-lago/10 bg-creme p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sol/50 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sol"
+            >
+              <span className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sol/15 text-sol-600" aria-hidden="true">
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <ellipse cx="12" cy="7" rx="7.5" ry="3.5" />
+                  <path d="M4.5 7v8c0 1.9 3.4 3.5 7.5 3.5s7.5-1.6 7.5-3.5V7M7.5 10.2l9 4.2M16.5 10.2l-9 4.2" />
+                </svg>
+              </span>
+              <span className="font-display text-xl text-lago">Oficina BSP</span>
+              <span className="mt-1 text-sm leading-relaxed text-tinta/70">Samba-reggae na prática com o Mestre Reinaldo Bráz, do primeiro toque aos quatro naipes.</span>
+              <span className="mt-auto pt-4 text-sm font-extrabold text-sol-600">Conhecer a oficina <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">→</span></span>
+            </Link>
+
+            <Link
+              href="/inspiracoes"
+              className="group flex min-h-[148px] flex-col rounded-2xl border border-lago/10 bg-creme p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sol/50 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sol"
+            >
+              <span className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-lago/10 text-lago" aria-hidden="true">
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 12h2l2.2-6 4.1 12 3.4-10 2.1 4H21" />
+                </svg>
+              </span>
+              <span className="font-display text-xl text-lago">Sons & Inspirações</span>
+              <span className="mt-1 text-sm leading-relaxed text-tinta/70">Escute os timbres dos naipes e conheça as referências musicais por trás da nossa batida.</span>
+              <span className="mt-auto pt-4 text-sm font-extrabold text-sol-600">Explorar os sons <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">→</span></span>
+            </Link>
+
+            <Link
+              href="/galeria"
+              className="group flex min-h-[148px] flex-col rounded-2xl border border-lago/10 bg-creme p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sol/50 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sol"
+            >
+              <span className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sol/15 text-sol-600" aria-hidden="true">
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="4" width="18" height="16" rx="2.5" />
+                  <circle cx="8.5" cy="9" r="1.5" />
+                  <path d="m21 15-5-5L5 20" />
+                </svg>
+              </span>
+              <span className="font-display text-xl text-lago">Galeria</span>
+              <span className="mt-1 text-sm leading-relaxed text-tinta/70">Registros de Carnaval, shows, cortejos e momentos da Oficina BSP para rever e compartilhar.</span>
+              <span className="mt-auto pt-4 text-sm font-extrabold text-sol-600">Ver fotos e vídeos <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">→</span></span>
+            </Link>
           </div>
-          <div className="mt-8"><HomeAlbums /></div>
         </div>
       </section>
 
-      {/* 06 · CONTRATAÇÃO: oferta clara antes do rodapé. */}
+      {/* 05 · CONTRATAÇÃO: oferta clara antes do rodapé. */}
       <section className="section-pad py-16 sm:py-24" id="contrate-o-bloco">
         <div className="container-bsp">
           <div className="relative isolate overflow-hidden rounded-[2.5rem] bg-sol px-7 py-10 text-creme sm:px-12 sm:py-14">
