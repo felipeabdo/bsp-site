@@ -94,6 +94,20 @@ export default function Header({ user }: { user: HeaderUser }) {
   }
 
   const name = user ? user.stageName?.split(" ")[0] || user.firstName : "";
+  const currentPageLabel = (() => {
+    if (pathname.startsWith("/area-integrante")) return "Minha área";
+    if (pathname.startsWith("/configuracoes")) return "Configurações";
+    if (pathname.startsWith("/eventos/leitor")) return "Leitor de eventos";
+    if (pathname === "/entrar") return "Acesso";
+    if (pathname === "/cadastro") return "Cadastro";
+    if (pathname.startsWith("/verificar/")) return "Verificação";
+    if (pathname.startsWith("/q/")) return "Carteirinha";
+    const activeItem = NAV.find((item) => isActive(item.href));
+    if (!activeItem) return "Bloco Santo Pecado";
+    if (activeItem.href === "/inspiracoes") return "Inspirações";
+    if (activeItem.href === "/oficina") return "Oficina";
+    return activeItem.label;
+  })();
 
   return (
     <>
@@ -107,6 +121,11 @@ export default function Header({ user }: { user: HeaderUser }) {
             <LogoMark className="h-11 w-11 text-sol transition-transform duration-300 group-hover:scale-105" />
             <Wordmark className="h-12 w-[78px] text-lago sm:h-14 sm:w-[92px]" />
           </Link>
+
+          <div className="mobile-current-page min-[1181px]:hidden" aria-label={`Página atual: ${currentPageLabel}`}>
+            <span className="mobile-current-page__dot" aria-hidden="true" />
+            <span key={pathname} className="mobile-current-page__label">{currentPageLabel}</span>
+          </div>
 
           <nav className="hidden items-center gap-1 min-[1181px]:flex" aria-label="Principal">
             {user ? (

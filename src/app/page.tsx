@@ -126,7 +126,7 @@ export default async function Home() {
       </section>
 
       {/* 03 · PROVA SOCIAL E HISTÓRIA. */}
-      <section className="relative overflow-hidden bg-creme py-16 sm:py-20" id="historia-resumida">
+      <section className="relative overflow-hidden bg-creme section-pad py-16 sm:py-20" id="historia-resumida">
         <Spiral className="pointer-events-none absolute -left-40 top-16 h-[30rem] w-[30rem] text-sol/10" stroke={6} />
         <div className="container-bsp relative">
           <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
