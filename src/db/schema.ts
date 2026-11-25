@@ -152,3 +152,16 @@ export const announcements = pgTable("announcements", {
   published: boolean("published").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+
+export const eventCheckIns = pgTable(
+  "event_check_ins",
+  {
+    id: serial("id").primaryKey(),
+    eventId: integer("event_id").notNull().references(() => events.id, { onDelete: "cascade" }),
+    userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    scannedBy: integer("scanned_by").notNull().references(() => users.id),
+    scannedAt: timestamp("scanned_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("event_check_ins_event_user_idx").on(t.eventId, t.userId)],
+);

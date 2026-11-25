@@ -75,6 +75,7 @@ export default function MemberDashboard({
   members,
   rsvpSummary,
   isAdmin,
+  memberQrValue,
 }: {
   user: MemberProfile;
   events: EventItem[];
@@ -83,6 +84,7 @@ export default function MemberDashboard({
   members: PublicMember[];
   rsvpSummary: RSVPCount[];
   isAdmin: boolean;
+  memberQrValue: string;
 }) {
   const router = useRouter();
   const [rsvps, setRsvps] = useState<Record<number, RSVP["status"]>>(
@@ -189,6 +191,7 @@ export default function MemberDashboard({
           <div className="mt-6 flex flex-wrap gap-2">
             <Link href="/configuracoes?aba=perfil" className="btn btn-creme">Atualizar meu perfil</Link>
             <Link href="/configuracoes?aba=carteirinha" className="btn btn-sol">Ver carteirinha completa</Link>
+            {isAdmin && <Link href="/eventos/leitor" className="btn btn-creme">Leitor de eventos</Link>}
             {(!user.hasPortrait || !user.hasBody) && <Link href="/configuracoes?aba=fotos" className="btn btn-creme">Completar minhas fotos</Link>}
           </div>
         </div>
@@ -197,7 +200,7 @@ export default function MemberDashboard({
             <p className="text-xs font-black uppercase tracking-widest text-creme/75">Sua carteirinha digital</p>
             <span className="rounded-full bg-sol px-3 py-1 text-xs font-extrabold text-creme">{currentStatus}</span>
           </div>
-          <IDCardFront m={user} />
+          <IDCardFront m={user} qrValue={memberQrValue} />
           <dl className="mt-4 grid grid-cols-2 gap-3 px-1 text-sm">
             <div><dt className="text-creme/60">Nome completo</dt><dd className="font-extrabold">{fullName(user)}</dd></div>
             <div><dt className="text-creme/60">ID único</dt><dd className="font-display text-xl">{user.memberId}</dd></div>

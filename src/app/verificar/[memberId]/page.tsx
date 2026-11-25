@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { IDCardFront } from "@/components/IDCard";
 import { getMember } from "@/lib/members";
 import { displayName } from "@/lib/member-utils";
+import { getSiteOrigin } from "@/lib/site-origin";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Verificar carteirinha" };
@@ -12,6 +13,7 @@ export default async function VerificarPage({ params }: { params: Promise<{ memb
   const { memberId } = await params;
   const m = await getMember(decodeURIComponent(memberId));
   if (!m) notFound();
+  const qrValue = `${await getSiteOrigin()}/verificar/${encodeURIComponent(m.memberId)}`;
   return (
     <section className="section-pad py-16 sm:py-24">
       <div className="container-bsp mx-auto max-w-2xl text-center">
@@ -21,7 +23,7 @@ export default async function VerificarPage({ params }: { params: Promise<{ memb
           O ID <strong>{m.memberId}</strong> pertence a {displayName(m)}, integrante do Bloco Santo Pecado.
         </p>
         <div className="mx-auto mt-10 max-w-md">
-          <IDCardFront m={m} />
+          <IDCardFront m={m} qrValue={qrValue} qrLabel="Verificação online" />
         </div>
         <p className="mt-6 text-sm text-tinta/60">Por segurança, esta página exibe apenas dados públicos.</p>
         <Link href="/integrantes" className="btn btn-sol mt-8">Ver todos os integrantes</Link>

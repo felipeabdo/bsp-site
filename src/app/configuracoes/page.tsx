@@ -9,6 +9,8 @@ import { isMusicAdmin } from "@/lib/music-admin";
 import MusicStudioAdmin from "@/components/MusicStudioAdmin";
 import PrivateAssignments from "@/components/PrivateAssignments";
 import { displayName } from "@/lib/member-utils";
+import { createMemberQrToken } from "@/lib/member-qr";
+import { getSiteOrigin } from "@/lib/site-origin";
 
 export const metadata: Metadata = { title: "Configurações" };
 export const dynamic = "force-dynamic";
@@ -28,6 +30,9 @@ export default async function ConfiguracoesPage({ searchParams }: { searchParams
   const admin = isMusicAdmin(user);
   const tabs = admin ? [...TABS, { key: "estudio", label: "Estúdio musical" }] : TABS;
   const aba = tabs.find((t) => t.key === sp.aba)?.key ?? "perfil";
+  const cardQrValue = aba === "carteirinha"
+    ? `${await getSiteOrigin()}/q/${createMemberQrToken(user.id, user.memberId)}`
+    : "";
 
   return (
     <>
@@ -39,6 +44,7 @@ export default async function ConfiguracoesPage({ searchParams }: { searchParams
           <p className="mt-2 text-lg text-creme/85">
             Seu ID de integrante: <strong className="font-display text-2xl text-creme">{user.memberId}</strong>
           </p>
+          {admin && <Link href="/eventos/leitor" className="mt-5 inline-flex rounded-full bg-creme px-5 py-2.5 font-bold text-lago shadow-sm transition hover:bg-sol hover:text-creme">Abrir leitor de eventos</Link>}
           {sp.novo && (
             <p className="mt-5 max-w-2xl rounded-2xl bg-sol p-4 font-semibold text-creme">
               Cadastro criado! Agora envie suas fotos (corpo inteiro e 3×4) para completar sua página e sua carteirinha.
@@ -73,11 +79,11 @@ export default async function ConfiguracoesPage({ searchParams }: { searchParams
             <div>
               <h2 className="font-display text-4xl text-lago sm:text-5xl">Minha carteirinha</h2>
               <p className="mt-2 max-w-2xl text-tinta/75">
-                Documento de identificação interna do bloco. A foto 3×4 e os dados vêm do seu perfil —
+                Documento de identificação interna do bloco. O QR Code identifica sua carteirinha e permite registrar presença em eventos —
                 {!user.hasPortrait && " envie sua foto na aba Fotos para completar."}
               </p>
               <div className="print-area mt-8 grid gap-6 lg:grid-cols-2">
-                <div className="mx-auto w-full max-w-lg"><IDCardFront m={user} /></div>
+                <div className="mx-auto w-full max-w-lg"><IDCardFront m={user} qrValue={cardQrValue} /></div>
                 <div className="mx-auto w-full max-w-lg"><IDCardBack m={user} p={user} /></div>
               </div>
               <div className="no-print mt-8 flex flex-wrap items-center gap-3">

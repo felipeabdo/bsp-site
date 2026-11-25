@@ -1,6 +1,7 @@
 import { LogoMark, Spiral, WordmarkHorizontal } from "@/components/art";
 import { MemberImage } from "@/components/silhouettes";
 import { displayName, fullName } from "@/lib/member-utils";
+import { qrSvgPath, QR_VIEWBOX } from "@/lib/qr-code";
 
 type CardMember = {
   memberId: string;
@@ -31,32 +32,25 @@ export type CardPrivate = {
 
 const CAT: Record<string, string> = { fundador: "Fundador(a)", atual: "Formação atual", ex: "Ex-integrante" };
 
-function Barcode({ value }: { value: string }) {
-  const bars: { x: number; w: number }[] = [];
-  let x = 0;
-  const bits = ("1011" + [...value].map((c) => c.charCodeAt(0).toString(2).padStart(7, "0")).join("") + "1101")
-    .split("")
-    .map(Number);
-  let i = 0;
-  while (i < bits.length) {
-    let j = i;
-    while (j < bits.length && bits[j] === bits[i]) j++;
-    if (bits[i] === 1) bars.push({ x, w: j - i });
-    x += j - i;
-    i = j;
-  }
+function MemberQr({ value }: { value: string }) {
+  const path = qrSvgPath(value);
   return (
-    <svg viewBox={`0 0 ${x} 24`} preserveAspectRatio="none" className="h-full w-full" aria-label={`Código de barras ${value}`} role="img">
-      {bars.map((b, k) => (
-        <rect key={k} x={b.x} y={0} width={b.w} height={24} fill="currentColor" />
-      ))}
+    <svg
+      viewBox={QR_VIEWBOX}
+      className="block h-full w-full"
+      role="img"
+      aria-label="QR Code de identificação do integrante"
+      shapeRendering="crispEdges"
+    >
+      <rect width="100%" height="100%" fill="#ffffff" />
+      <path d={path} fill="#174f68" />
     </svg>
   );
 }
 
 const fmtDate = (d?: string | null) => (d ? d.split("-").reverse().join("/") : "—");
 
-export function IDCardFront({ m }: { m: CardMember }) {
+export function IDCardFront({ m, qrValue, qrLabel = "Acesso a eventos" }: { m: CardMember; qrValue: string; qrLabel?: string }) {
   const since = m.category === "ex" && m.leftYear ? `${m.joinYear}–${m.leftYear}` : `desde ${m.joinYear}`;
   return (
     <div className="[container-type:inline-size] w-full">
@@ -65,18 +59,24 @@ export function IDCardFront({ m }: { m: CardMember }) {
         <div className="absolute inset-y-0 left-0 w-[3.2cqw] bg-lago" />
         <div className="absolute inset-0 grid grid-cols-[30cqw_1fr] gap-[4cqw] p-[5cqw] pl-[7cqw]">
           <div className="flex flex-col">
-            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[2.2cqw] border-[0.9cqw] border-creme bg-areia text-lago">
+            <div className="relative aspect-[5/6] w-full overflow-hidden rounded-[2.2cqw] border-[0.9cqw] border-creme bg-areia text-lago">
               <MemberImage member={m} kind="portrait" className="h-full w-full" />
             </div>
-            <div className="mt-[2cqw] rounded-[1.6cqw] bg-creme px-[1.5cqw] py-[1cqw] text-center text-tinta">
-              <div className="h-[6.5cqw]"><Barcode value={m.memberId} /></div>
+            <div className="mx-auto mt-[1.4cqw] flex w-full items-center justify-center gap-[1.4cqw] rounded-[1.6cqw] bg-creme px-[1.2cqw] py-[0.8cqw] text-lago">
+              <div className="h-[13.4cqw] w-[13.4cqw] shrink-0 overflow-hidden rounded-[0.7cqw] bg-white p-[0.25cqw]">
+                <MemberQr value={qrValue} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-display uppercase leading-[0.95]" style={{ fontSize: "2.5cqw" }}>{qrLabel}</p>
+                <p className="mt-[0.8cqw] font-semibold uppercase leading-tight opacity-75" style={{ fontSize: "1.55cqw", letterSpacing: "0.08em" }}>Aponte o leitor</p>
+              </div>
             </div>
           </div>
           <div className="flex min-w-0 flex-col">
             <div className="flex items-center gap-[2cqw]">
               <div className="flex min-w-0 flex-col items-start">
                 <WordmarkHorizontal className="h-[4.2cqw] w-[48cqw] text-creme" />
-                <span className="mt-[0.6cqw] whitespace-nowrap font-semibold uppercase text-tinta" style={{ fontSize: "2cqw", letterSpacing: "0.1em" }}>Carteirinha de integrante</span>
+                <span className="mt-[0.7cqw] inline-flex w-fit whitespace-nowrap rounded-full bg-creme px-[1.5cqw] py-[0.55cqw] font-extrabold uppercase text-lago shadow-sm" style={{ fontSize: "2cqw", letterSpacing: "0.1em" }}>Carteirinha de integrante</span>
               </div>
             </div>
             <div className="mt-auto">

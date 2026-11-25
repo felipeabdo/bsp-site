@@ -7,6 +7,8 @@ import { announcements, eventRsvps, users } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
 import { listMembers, publishedUpcomingEvents } from "@/lib/members";
 import { isMusicAdmin } from "@/lib/music-admin";
+import { createMemberQrToken } from "@/lib/member-qr";
+import { getSiteOrigin } from "@/lib/site-origin";
 
 export const metadata: Metadata = { title: "Área do Integrante" };
 export const dynamic = "force-dynamic";
@@ -16,6 +18,7 @@ export default async function AreaIntegrantePage() {
   if (!user) redirect("/entrar");
 
   const isAdmin = isMusicAdmin(user);
+  const memberQrValue = `${await getSiteOrigin()}/q/${createMemberQrToken(user.id, user.memberId)}`;
   const [events, noticeRows, members] = await Promise.all([
     publishedUpcomingEvents(12),
     db.select().from(announcements)
@@ -84,6 +87,7 @@ export default async function AreaIntegrantePage() {
             total: Number(row.total),
           }))}
           isAdmin={isAdmin}
+          memberQrValue={memberQrValue}
         />
       </div>
     </section>
