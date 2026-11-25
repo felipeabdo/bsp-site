@@ -73,6 +73,20 @@ export function Waves({ className = "" }: { className?: string }) {
   );
 }
 
+/**
+ * Composição inferior das heros internas: tridente central completo com as asas.
+ * O SVG reaproveita os vetores originais do símbolo oficial e remove somente o halo.
+ */
+export function PageHeroEmblem({ className = "" }: { className?: string }) {
+  return (
+    <span
+      className={`block ${className}`}
+      style={brandMask("symbol-winged-trident-mask.svg")}
+      aria-hidden="true"
+    />
+  );
+}
+
 /** Símbolo oficial: tridente, halo e asas, extraídos em vetor do PDF. */
 export function LogoMark({ className = "", wing: _wing }: { className?: string; wing?: string }) {
   return (
@@ -90,8 +104,7 @@ export function Wordmark({ className = "" }: { className?: string }) {
     <span
       className={`block shrink-0 ${className}`}
       style={brandMask("wordmark-stacked-mask.svg")}
-      role="img"
-      aria-label="Bloco Santo Pecado"
+      aria-hidden="true"
     />
   );
 }
@@ -102,8 +115,7 @@ export function WordmarkHorizontal({ className = "" }: { className?: string }) {
     <span
       className={`block shrink-0 ${className}`}
       style={brandMask("wordmark-horizontal-mask.svg")}
-      role="img"
-      aria-label="Bloco Santo Pecado"
+      aria-hidden="true"
     />
   );
 }
@@ -114,8 +126,7 @@ export function BspMonogram({ className = "" }: { className?: string }) {
     <span
       className={`block shrink-0 ${className}`}
       style={brandMask("monogram-bsp-mask.svg")}
-      role="img"
-      aria-label="BSP"
+      aria-hidden="true"
     />
   );
 }
@@ -126,8 +137,6 @@ export function BrandMotto({ className = "", light = false }: { className?: stri
     <Img
       src={`${VECTORS}/motto-eu-curto${light ? "-light" : ""}.svg`}
       alt="Eu curto bloco de rua!"
-      width={108}
-      height={91}
       className={className}
     />
   );

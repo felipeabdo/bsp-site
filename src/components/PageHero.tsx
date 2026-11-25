@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { LogoMark, Waves } from "@/components/art";
+import { LogoMark, PageHeroEmblem } from "@/components/art";
 
 const TONES = {
   lago: { bg: "bg-lago text-creme", spiral: "text-creme/15", chip: "bg-creme text-lago-700", accent: "text-sol", wave: "text-creme/30" },
@@ -28,8 +28,10 @@ export default function PageHero({
 
   return (
     <section className={`relative overflow-hidden ${t.bg}`}>
+      {/* Símbolo grande à direita: preservado como estava. */}
       <LogoMark className={`pointer-events-none absolute -right-32 -top-32 h-[34rem] w-[38rem] ${t.spiral}`} />
-      <Waves className={`pointer-events-none absolute -bottom-4 left-0 h-32 w-full ${t.wave}`} />
+      {/* Emblema inferior central com o tridente completo e as asas originais. */}
+      <PageHeroEmblem className={`pointer-events-none absolute bottom-0 left-0 h-[13.25rem] w-full sm:h-[14.5rem] ${t.wave}`} />
 
       <div
         className={`container-bsp section-pad relative ${

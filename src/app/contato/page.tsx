@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import PageHero from "@/components/PageHero";
 import { ContactForm } from "@/components/Forms";
 import { Spiral } from "@/components/art";
@@ -9,10 +10,37 @@ export const metadata: Metadata = { title: "Contato" };
 export default async function ContatoPage({ searchParams }: { searchParams: Promise<{ assunto?: string }> }) {
   const params = await searchParams;
   const defaultSubject = params.assunto === "contratar" ? "Contratar o bloco para evento" : "";
-  const channels = [
-    { t: "Instagram", v: `@${SITE.instagram}`, h: SITE.instagramUrl, c: "bg-sol text-creme" },
-    { t: "WhatsApp", v: SITE.whatsappLabel, h: `https://wa.me/${SITE.whatsapp}`, c: "bg-lago text-creme" },
-    { t: "E-mail", v: SITE.email, h: `mailto:${SITE.email}`, c: "bg-areia text-tinta" },
+  const channels: Array<{
+    t: string;
+    v: string;
+    h: string;
+    c: string;
+    snailStyle: CSSProperties;
+  }> = [
+    {
+      t: "Instagram",
+      v: `@${SITE.instagram}`,
+      h: SITE.instagramUrl,
+      c: "bg-sol text-creme",
+      snailStyle: {
+        backgroundImage: "linear-gradient(45deg, #FCAF45 0%, #F77737 25%, #DD2A7B 55%, #8134AF 78%, #515BD4 100%)",
+        backgroundColor: "transparent",
+      },
+    },
+    {
+      t: "WhatsApp",
+      v: SITE.whatsappLabel,
+      h: `https://wa.me/${SITE.whatsapp}`,
+      c: "bg-lago text-creme",
+      snailStyle: { backgroundColor: "#25D366" },
+    },
+    {
+      t: "E-mail",
+      v: SITE.email,
+      h: `mailto:${SITE.email}`,
+      c: "bg-areia text-tinta",
+      snailStyle: { backgroundColor: "#EA4335" },
+    },
   ];
   return (
     <>
@@ -28,9 +56,9 @@ export default async function ContatoPage({ searchParams }: { searchParams: Prom
           <div className="space-y-4">
             {channels.map((c) => (
               <a key={c.t} href={c.h} target="_blank" rel="noreferrer" className={`${c.c} group relative block overflow-hidden rounded-[2rem] p-6 transition hover:-translate-y-1`}>
-                <Spiral className="absolute -right-8 -top-8 h-32 w-32 opacity-20 transition duration-700 group-hover:rotate-90" stroke={8} />
+                <Spiral className="absolute -right-8 -top-8 h-32 w-32 opacity-100 transition duration-700 group-hover:rotate-90" stroke={8} style={c.snailStyle} />
                 <p className="relative text-sm font-bold uppercase tracking-widest opacity-80">{c.t}</p>
-                <p className="font-display relative mt-1 break-all text-2xl sm:text-3xl">{c.v}</p>
+                <p className="font-display relative mt-1 break-all text-2xl sm:text-2xl">{c.v}</p>
               </a>
             ))}
             <div className="rounded-[2rem] bg-white p-6 ring-1 ring-tinta/5">

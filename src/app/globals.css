@@ -1834,3 +1834,29 @@ textarea.input {
   .mobile-current-page__label { animation: none; }
 }
 
+/* BSP_FIX_MENU_MOBILE_NO_HORIZONTAL_SCROLL */
+/* As espirais decorativas ultrapassam intencionalmente as bordas do menu.
+   Elas devem ser recortadas, não transformar o painel em área rolável lateral. */
+.mobile-menu-panel {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+.mobile-menu-panel ul,
+.mobile-menu-panel li {
+  min-width: 0;
+  max-width: 100%;
+}
+.mobile-menu-panel .mobile-menu-link {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+.mobile-menu-panel .mobile-menu-link > span {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
