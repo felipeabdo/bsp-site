@@ -192,32 +192,67 @@ function resizeBody(img: HTMLImageElement, png: boolean) {
   throw new Error("Imagem grande demais. Tente uma foto menor.");
 }
 
-/** Redimensiona sem preencher o fundo, preservando o canal alfa do PNG. */
+/**
+ * Redimensiona o PNG mantendo o canal alfa e remove apenas as bordas
+ * totalmente transparentes. Isso faz os pés coincidirem com a base visual
+ * do card, mesmo quando o arquivo original veio com muita margem vazia.
+ */
 function resizeTransparentBody(img: HTMLImageElement) {
   let scale = Math.min(1, 1000 / img.naturalWidth, 1600 / img.naturalHeight);
   for (let i = 0; i < 8; i++) {
-    const c = document.createElement("canvas");
-    c.width = Math.max(1, Math.round(img.naturalWidth * scale));
-    c.height = Math.max(1, Math.round(img.naturalHeight * scale));
-    const ctx = c.getContext("2d", { willReadFrequently: true });
-    if (!ctx) throw new Error("Não foi possível preparar a imagem neste navegador.");
-    ctx.clearRect(0, 0, c.width, c.height);
-    ctx.drawImage(img, 0, 0, c.width, c.height);
+    const source = document.createElement("canvas");
+    source.width = Math.max(1, Math.round(img.naturalWidth * scale));
+    source.height = Math.max(1, Math.round(img.naturalHeight * scale));
+    const sourceCtx = source.getContext("2d", { willReadFrequently: true });
+    if (!sourceCtx) throw new Error("Não foi possível preparar a imagem neste navegador.");
+    sourceCtx.clearRect(0, 0, source.width, source.height);
+    sourceCtx.drawImage(img, 0, 0, source.width, source.height);
 
-    const pixels = ctx.getImageData(0, 0, c.width, c.height).data;
-    const stepX = Math.max(1, Math.floor(c.width / 64));
-    const stepY = Math.max(1, Math.floor(c.height / 64));
+    const pixels = sourceCtx.getImageData(0, 0, source.width, source.height).data;
     let hasTransparency = false;
-    for (let y = 3; y < c.height && !hasTransparency; y += stepY) {
-      for (let x = 3; x < c.width; x += stepX) {
-        if (pixels[(y * c.width + x) * 4 + 3] < 245) { hasTransparency = true; break; }
+    let minX = source.width;
+    let minY = source.height;
+    let maxX = -1;
+    let maxY = -1;
+
+    // Considera pixels suavizados da borda como parte da pessoa, mas ignora
+    // ruído quase invisível que poderia impedir o recorte da margem vazia.
+    for (let y = 0; y < source.height; y++) {
+      for (let x = 0; x < source.width; x++) {
+        const alpha = pixels[(y * source.width + x) * 4 + 3];
+        if (alpha < 245) hasTransparency = true;
+        if (alpha > 16) {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
       }
     }
-    if (!hasTransparency) {
+
+    if (!hasTransparency || maxX < minX || maxY < minY) {
       throw new Error("Este PNG parece ter fundo opaco. Envie um PNG exportado com transparência real.");
     }
 
-    const url = c.toDataURL("image/png");
+    const contentWidth = maxX - minX + 1;
+    const contentHeight = maxY - minY + 1;
+    const padX = Math.max(2, Math.round(contentWidth * 0.025));
+    const padTop = Math.max(2, Math.round(contentHeight * 0.015));
+    // Quase nenhuma margem inferior: os pés ficam alinhados à base do card.
+    const padBottom = Math.max(1, Math.round(contentHeight * 0.002));
+    const cropX = Math.max(0, minX - padX);
+    const cropY = Math.max(0, minY - padTop);
+    const cropRight = Math.min(source.width, maxX + 1 + padX);
+    const cropBottom = Math.min(source.height, maxY + 1 + padBottom);
+    const output = document.createElement("canvas");
+    output.width = Math.max(1, cropRight - cropX);
+    output.height = Math.max(1, cropBottom - cropY);
+    const outputCtx = output.getContext("2d");
+    if (!outputCtx) throw new Error("Não foi possível finalizar a imagem neste navegador.");
+    outputCtx.clearRect(0, 0, output.width, output.height);
+    outputCtx.drawImage(source, cropX, cropY, output.width, output.height, 0, 0, output.width, output.height);
+
+    const url = output.toDataURL("image/png");
     if (url.length < 2_000_000) return url;
     scale *= 0.82;
   }

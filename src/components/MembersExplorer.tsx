@@ -77,27 +77,34 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
           <p className="text-lg font-medium">{TABS.find((t) => t.key === tab)?.empty}</p>
         </div>
       ) : (
-        <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-6 sm:gap-y-14 md:grid-cols-3 lg:grid-cols-4">
+        <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-20 sm:gap-x-6 sm:gap-y-24 md:grid-cols-3 lg:grid-cols-4">
           {list.map((m, i) => {
             const isCutout = m.hasBody && m.bodyPhotoType === "cutout";
             return (
-              <li key={m.memberId} className="relative isolate">
+              <li key={m.memberId} className="relative isolate hover:z-30 focus-within:z-30">
                 <button
                   onClick={() => setOpenId(m.memberId)}
-                  className="group block w-full text-left"
+                  className="group block w-full overflow-visible text-left"
                   aria-label={`Ver destaque de ${displayName(m)}`}
                 >
-                  <div className="relative aspect-[3/4] overflow-visible transition duration-300 group-hover:-translate-y-2 group-hover:rotate-[-1.5deg]">
-                    <div className={`absolute inset-0 overflow-hidden rounded-[1.75rem] ${TONES[i % 3]}`}>
+                  <div className="relative isolate aspect-[3/4] w-full overflow-visible transform-gpu transition duration-300 group-hover:-translate-y-2 group-hover:rotate-[-1.5deg]">
+                    {/* O fundo mantém o recorte, a cor e a espiral animada originais. */}
+                    <div className={`absolute inset-0 z-0 overflow-hidden rounded-[1.75rem] ${TONES[i % 3]}`}>
                       <Spiral className="absolute -right-8 -top-8 h-36 w-36 opacity-25 transition duration-700 group-hover:rotate-90" stroke={8} />
                     </div>
                     {isCutout ? (
-                      <div className="pointer-events-none absolute -inset-x-[4%] -top-[10%] -bottom-[5%] z-10 flex items-end justify-center">
+                      <div className="pointer-events-none absolute -inset-x-[6%] top-[-18%] bottom-0 z-20 flex items-end justify-center overflow-visible">
+                        {/* Sombra de contato no chão, atrás dos pés do integrante. */}
+                        <div
+                          aria-hidden="true"
+                          className="absolute bottom-[1.1%] left-1/2 z-0 h-[5.5%] w-[68%] -translate-x-1/2 rounded-[50%] blur-[7px]"
+                          style={{ background: "radial-gradient(ellipse at center, rgba(12, 38, 52, 0.42) 0%, rgba(12, 38, 52, 0.22) 46%, rgba(12, 38, 52, 0) 78%)" }}
+                        />
                         <MemberImage
                           member={m}
                           kind="body"
                           fit="contain"
-                          className="h-full w-full object-contain object-bottom drop-shadow-[0_12px_12px_rgba(23,79,104,0.18)]"
+                          className="relative z-10 block h-full w-full object-contain object-bottom drop-shadow-[0_14px_12px_rgba(10,35,48,0.24)]"
                         />
                       </div>
                     ) : (
@@ -105,9 +112,9 @@ export default function MembersExplorer({ members }: { members: PublicMember[] }
                         <MemberImage member={m} kind="body" className="h-full w-full" silClass={i % 3 === 2 ? "text-lago/70" : "text-creme/85"} />
                       </div>
                     )}
-                    <span className="absolute left-3 top-3 z-20 rounded-full bg-creme px-3 py-1 text-xs font-bold text-tinta shadow-sm">{m.memberId}</span>
+                    <span className="absolute left-3 top-3 z-30 rounded-full bg-creme px-3 py-1 text-xs font-bold text-tinta shadow-sm">{m.memberId}</span>
                     {m.isDemo && (
-                      <span className="absolute bottom-3 left-3 z-20 rounded-full bg-tinta/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-creme">Exemplo</span>
+                      <span className="absolute bottom-3 left-3 z-30 rounded-full bg-tinta/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-creme">Exemplo</span>
                     )}
                   </div>
                   <div className="mt-6 px-1">

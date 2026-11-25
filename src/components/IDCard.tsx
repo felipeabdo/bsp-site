@@ -53,8 +53,9 @@ const fmtDate = (d?: string | null) => (d ? d.split("-").reverse().join("/") : "
 export function IDCardFront({ m, qrValue, qrLabel = "Acesso a eventos" }: { m: CardMember; qrValue: string; qrLabel?: string }) {
   const since = m.category === "ex" && m.leftYear ? `${m.joinYear}–${m.leftYear}` : `desde ${m.joinYear}`;
   return (
-    <div className="[container-type:inline-size] w-full">
-      <div className="relative aspect-[1.586] w-full overflow-hidden rounded-[4cqw] bg-sol text-creme shadow-[0_20px_40px_-18px_rgba(40,121,159,0.6)]">
+    // Isola a tipografia do cartão do alinhamento herdado da página que o incorpora.
+    <div className="[container-type:inline-size] w-full text-left">
+      <div className="relative aspect-[1.586] w-full overflow-hidden rounded-[4cqw] bg-sol text-creme text-left shadow-[0_20px_40px_-18px_rgba(40,121,159,0.6)]">
         <Spiral className="absolute -right-[10cqw] -top-[14cqw] h-[60cqw] w-[60cqw] text-lago" stroke={7} />
         <div className="absolute inset-y-0 left-0 w-[3.2cqw] bg-lago" />
         <div className="absolute inset-0 grid grid-cols-[30cqw_1fr] gap-[4cqw] p-[5cqw] pl-[7cqw]">
