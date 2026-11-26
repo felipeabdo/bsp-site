@@ -56,7 +56,17 @@ export default async function ContatoPage({ searchParams }: { searchParams: Prom
           <div className="space-y-4">
             {channels.map((c) => (
               <a key={c.t} href={c.h} target="_blank" rel="noreferrer" className={`${c.c} group relative block overflow-hidden rounded-[2rem] p-6 transition hover:-translate-y-1`}>
-                <Spiral className="absolute -right-8 -top-8 h-32 w-32 opacity-100 transition duration-700 group-hover:rotate-90" stroke={8} style={c.snailStyle} />
+                <span
+                  className="pointer-events-none absolute -right-8 -top-8 z-0 flex h-32 w-32 items-center justify-center rounded-full border border-white/75 shadow-[0_8px_20px_rgba(20,30,30,0.12)]"
+                  style={{ backgroundColor: "rgba(255, 249, 240, 0.88)" }}
+                >
+                  <span
+                  className="pointer-events-none absolute -right-8 -top-8 z-0 flex h-32 w-32 items-center justify-center rounded-full border border-white/75 shadow-[0_8px_20px_rgba(20,30,30,0.12)]"
+                  style={{ backgroundColor: "rgba(255, 249, 240, 0.88)" }}
+                >
+                  <Spiral className="h-24 w-24 shrink-0 transition duration-700 group-hover:rotate-90" stroke={8} style={c.snailStyle} />
+                </span>
+                </span>
                 <p className="relative text-sm font-bold uppercase tracking-widest opacity-80">{c.t}</p>
                 <p className="font-display relative mt-1 break-all text-2xl sm:text-2xl">{c.v}</p>
               </a>
