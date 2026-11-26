@@ -6,3 +6,7 @@ dist/
 coverage/
 *.log
 .DS_Store
+.backups/
+.patch-backups/
+src-backup-*/
+tsconfig.tsbuildinfo
